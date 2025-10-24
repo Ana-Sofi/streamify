@@ -8,7 +8,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Sofi",
-  "license": "ISC",
-  "workspaces":["server", "frontend"]
+  "license": "ISC"
 }
  
