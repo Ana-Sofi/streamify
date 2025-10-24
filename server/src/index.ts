@@ -1,26 +1,20 @@
-console.log("Try npm run lint/fix!");
+import * as dotenv from 'dotenv';
+dotenv.config();
 
-const longString = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut aliquet diam.';
+import * as express from 'express';
+import moviesController from './controllers/movies.controller';
+import {errorHandler} from './middleware/error-handler';
 
-const trailing = 'Semicolon'
+const port = 3000;
+const app = express();
 
-			const why={am:'I tabbed?'};
+app.use(express.json());
 
-const iWish = "I didn't have a trailing space..."; 
+app.use('/movies', moviesController);
 
-const sicilian = true;;
+// Keep at the bottom of routes
+app.use(errorHandler);
 
-const vizzini = (!!sicilian) ? !!!sicilian : sicilian;
-
-const re = /foo   bar/;
-
-export function doSomeStuff(withThis: string, andThat: string, andThose: string[]) {
-    //function on one line
-    if(!Boolean(andThose.length)) {return false;}
-    console.log(withThis);
-    console.log(andThat);
-    console.dir(andThose);
-    console.log(longString, trailing, why, iWish, vizzini, re);
-    return;
-}
-// TODO: more examples
+app.listen(port, () => {
+  console.log(`Server is listening on http://localhost:${port}`); //para imprimir texto en pantalla
+}); // para inicializar el servidor y saber si ya arrancó
