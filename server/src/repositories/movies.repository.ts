@@ -13,7 +13,7 @@ export type DbMovie = {
 
 export async function getAllMovies() {
   const dbMovies = (await sql`
-    select * from streamify.movie;
+    select * from streamify.movie
   `) as DbMovie[];
 
   return dbMovies.map(dbMovie => dbMovieToModelMovie(dbMovie));
@@ -50,9 +50,7 @@ export async function patchMovie(movie: Id<Partial<Movie>>) {
   if (patchedFields.length === 0) return -1;
   const patchSql =
     'update streamify.movie set ' +
-    patchedFields
-      .map(([field, value], i) => `${field} = $${i + 1}`)
-      .join(', ') +
+    patchedFields.map(([field], i) => `${field} = $${i + 1}`).join(', ') +
     ` where movie_id = ${movie.id}`;
   const values = patchedFields.map(([, value]) => value);
 

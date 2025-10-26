@@ -3,16 +3,22 @@ dotenv.config();
 
 import * as express from 'express';
 // Server middleware
-import {errorHandler} from './middleware/error-handler';
-// Controllers
-import moviesController from './controllers/movies.controller';
+import {errorHandler} from './handlers/error.handler';
+// Routers
+import {authRouter} from './routers/auth.router';
+import {moviesRouter} from './routers/movies.router';
+import {authenticationHandler} from './handlers/authentication.handler';
 
 const port = 3000;
 const app = express();
 
 app.use(express.json());
 
-app.use('/api/movies', moviesController);
+app.use('/api/auth', authRouter);
+
+app.use(authenticationHandler);
+// Authenticated routes
+app.use('/api/movies', moviesRouter);
 
 // Keep at the bottom of routes
 app.use(errorHandler);

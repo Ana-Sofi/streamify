@@ -1,0 +1,23 @@
+meta {
+  name: auth_login
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{SERVER_URL}}/api/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "jon.doe@domain.com",
+    "password": "mysecretpassword"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

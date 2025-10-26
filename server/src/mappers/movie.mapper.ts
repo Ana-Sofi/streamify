@@ -1,6 +1,6 @@
 import {Movie} from '../model/movie.model';
 import {Id} from '../model/id.model';
-import {DbMovie} from '../repositories/movie.repository';
+import {DbMovie} from '../repositories/movies.repository';
 
 export function dbMovieToModelMovie(dbMovie: DbMovie) {
   return {

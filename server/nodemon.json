@@ -1,0 +1,9 @@
+{
+  "ext": "ts,json",
+  "ignore": ["build"],
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "exec": "pnpm run build && node build/src/index.js",
+  "restartable": "rs"
+}

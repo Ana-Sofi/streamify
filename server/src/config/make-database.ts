@@ -8,7 +8,7 @@ async function makeDatabase() {
     encoding: 'utf-8',
   });
 
-  const result = await sql.unsafe(dml);
+  await sql.unsafe(dml);
   await sql.end();
 }
 

@@ -5,17 +5,16 @@ import {
   getMovie,
   insertMovie,
   patchMovie,
-} from '../repositories/movie.repository';
+} from '../repositories/movies.repository';
 import {NotFoundError} from '../errors/not-found.error';
 import {newMovieSchema} from '../validators/new-movie.schema';
 import {Movie} from '../model/movie.model';
 import {patchMovieSchema} from '../validators/patch-movie.schema';
 import {Id} from '../model/id.model';
-import {number} from 'yup';
 import {idParamSchema} from '../validators/id-param.schema';
 import {BadRequestError} from '../errors/bad-request.error';
 
-const router: Router = Router();
+const router = Router();
 
 router.get('/', async (req, res, next) => {
   const movies = await getAllMovies();
@@ -66,4 +65,4 @@ router.delete('/:id', async (req, res, next) => {
   else throw new NotFoundError('Movie not found!');
 });
 
-export default router;
+export const moviesRouter: Router = router;
