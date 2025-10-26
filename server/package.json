@@ -18,7 +18,8 @@
     "prepare": "pnpm run build",
     "pretest": "pnpm run build",
     "posttest": "pnpm run lint",
-    "dev": "nodemon src/index.ts"
+    "dev": "nodemon src/index.ts",
+    "database:create": "ts-node src/config/make-database.ts"
   },
   "devDependencies": {
     "@types/express": "^5.0.3",

@@ -7,6 +7,7 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
       .status(err.code)
       .send({message: `Error: ${err.message}`, status: err.code});
   } else {
+    console.error(err);
     res.status(500).send({error: `An unknownerror has occurred\n${err}`});
   }
 };

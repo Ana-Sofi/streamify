@@ -28,3 +28,11 @@ export async function getMovieById(id: string): Promise<Movie | null> {
   if (!first) return null;
   return dbMovieToModelMovie(first);
 }
+
+export async function insertMove(movie: Omit<Movie, 'id'>): Promise<void> {
+  const result = await sql`
+    insert into streamify.movie(name, descriptions, view_count, score_average) 
+    values (${movie.name}, ${movie.description}, ${movie.viewCount}, ${movie.scoreAverage})
+  `;
+  console.log(result);
+}
