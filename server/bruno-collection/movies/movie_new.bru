@@ -1,0 +1,23 @@
+meta {
+  name: movie_new
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{SERVER_URL}}/api/movies
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "The Super Mario Movie",
+    "description": "Mama mia"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

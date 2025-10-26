@@ -1,0 +1,26 @@
+meta {
+  name: moview_patch
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{SERVER_URL}}/api/movies/:id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 1
+}
+
+body:json {
+  {
+    "description": "This is a test update"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

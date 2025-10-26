@@ -1,0 +1,16 @@
+meta {
+  name: movies_index
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{SERVER_URL}}/api/movies
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
