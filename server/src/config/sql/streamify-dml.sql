@@ -1,0 +1,62 @@
+CREATE SCHEMA IF NOT EXISTS streamify;
+
+SET search_path TO streamify;
+
+CREATE TABLE IF NOT EXISTS Profile (
+    profile_id INT NOT NULL,
+    name VARCHAR(32) NOT NULL,
+    last_name VARCHAR(64) NOT NULL,
+    email VARCHAR(128) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    PRIMARY KEY (profile_id)
+);
+
+CREATE TABLE IF NOT EXISTS Movie (
+    movie_id INT NOT NULL,
+    name VARCHAR(32) NOT NULL,
+    description TEXT,
+    view_count INT NOT NULL,
+    score_average DECIMAL(3, 2),
+    PRIMARY KEY (movie_id)
+);
+
+CREATE TABLE IF NOT EXISTS View (
+    view_id INT NOT NULL,
+    score INT,
+    profile_id INT NOT NULL,
+    movie_id INT NOT NULL,
+    PRIMARY KEY (view_id),
+    CONSTRAINT fk_profile FOREIGN KEY (profile_id) REFERENCES Profile (profile_id),
+    CONSTRAINT fk_movie FOREIGN KEY (movie_id) REFERENCES Movie (movie_id)
+);
+
+CREATE TABLE IF NOT EXISTS Genre (
+    genre_id INT NOT NULL,
+    genre_name VARCHAR(40),
+    PRIMARY KEY (Genre_id)
+);
+
+CREATE TABLE IF NOT EXISTS Movie_Genre (
+    genre_id INT NOT NULL,
+    movie_id INT NOT NULL,
+    PRIMARY KEY (genre_id, movie_id),
+    CONSTRAINT fk_genre FOREIGN KEY (genre_id) REFERENCES Genre (genre_id),
+    CONSTRAINT fk_movie FOREIGN KEY (movie_id) REFERENCES Movie (movie_id)
+);
+
+CREATE TABLE IF NOT EXISTS Staff_Member (
+    staff_member_id INT NOT NULL,
+    name VARCHAR(32) NOT NULL,
+    last_name VARCHAR(64) NOT NULL,
+    PRIMARY KEY (staff_member_id)
+);
+
+CREATE TABLE IF NOT EXISTS Movie_Staff (
+    movie_staff_id INT NOT NULL,
+    role_name VARCHAR(32) NOT NULL,
+    movie_id INT NOT NULL,
+    staff_member_id INT NOT NULL,
+    PRIMARY KEY (movie_staff_id),
+    CONSTRAINT fk_movie FOREIGN KEY (movie_id) REFERENCES Movie (movie_id),
+    CONSTRAINT fk_staff_member FOREIGN KEY (staff_member_id) REFERENCES Staff_Member (staff_member_id)
+);
