@@ -1,0 +1,20 @@
+meta {
+  name: staff_delete
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{SERVER_URL}}/api/staff/:id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  id: 1
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

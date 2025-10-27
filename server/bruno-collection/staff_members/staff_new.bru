@@ -1,0 +1,23 @@
+meta {
+  name: staff_new
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{SERVER_URL}}/api/staff
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Zendaya",
+    "lastName": "???"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

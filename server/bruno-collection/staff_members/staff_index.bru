@@ -1,0 +1,16 @@
+meta {
+  name: staff_index
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{SERVER_URL}}/api/staff
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,0 +1,24 @@
+meta {
+  name: staff_patch
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{SERVER_URL}}/api/staff/:id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 0
+}
+
+body:json {
+  { "lastName": "Johns?" }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

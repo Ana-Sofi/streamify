@@ -46,7 +46,6 @@ export async function patchGenre(genre: Id<Partial<Genre>>) {
     ` where genre_id = $${patchedFields.length + 1}`;
   const values = patchedFields.map(([, value]) => value);
   values.push(genre.id);
-  console.debug(patchSql, values);
 
   const result = await sql.unsafe(patchSql, values);
   return result.count;
