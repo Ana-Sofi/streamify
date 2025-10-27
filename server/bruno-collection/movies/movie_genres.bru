@@ -1,0 +1,20 @@
+meta {
+  name: movie_genres
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{SERVER_URL}}/api/movies/:id/genres
+  body: none
+  auth: inherit
+}
+
+params:path {
+  id: 1
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

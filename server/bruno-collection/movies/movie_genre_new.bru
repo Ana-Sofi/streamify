@@ -1,0 +1,26 @@
+meta {
+  name: movie_genre_new
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{SERVER_URL}}/api/movies/:id/genres
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 1
+}
+
+body:json {
+  {
+    "genreId": 1
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

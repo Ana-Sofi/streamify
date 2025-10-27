@@ -11,6 +11,13 @@ import {
 } from '../repositories/genres.repository';
 import {newGenreSchema} from '../validators/new-genre.schema';
 import {patchGenreSchema} from '../validators/patch-genre.schema';
+import {
+  deleteMovieGenre,
+  getGenreMovies,
+  insertMovieGenre,
+} from '../repositories/movie-genre.repository';
+import {newMovieGenreSchema} from '../validators/new-movie-genre.schema';
+import {ForbiddenError} from '../errors/forbidden.error';
 
 const router: Router = Router();
 
@@ -60,4 +67,35 @@ router.delete('/:id', async (req, res, next) => {
   else throw new NotFoundError('Genre not found!');
 });
 
+router.get('/:id/movies', async (req, res, next) => {
+  const {id} = await idParamSchema.validate(req.params);
+  const movies = await getGenreMovies(id);
+
+  res.status(200).send(movies);
+});
+
+router.post('/:id/movies', async (req, res, next) => {
+  const movieGenre = await newMovieGenreSchema.validate({
+    ...req.body,
+    genreId: req.params.id,
+  });
+
+  const rowsAltered = await insertMovieGenre(movieGenre);
+  if (rowsAltered === 0) throw new NotFoundError('Movie or Genre not found!');
+  else if (rowsAltered === -1)
+    throw new ForbiddenError('Movie Genre already exists!');
+  res.status(201).send({message: `Success ${rowsAltered} rows created`});
+});
+
+router.delete('/:id/movies', async (req, res, next) => {
+  const movieGenre = await newMovieGenreSchema.validate({
+    ...req.body,
+    genreId: req.params.id,
+  });
+  const rowsAltered = await deleteMovieGenre(movieGenre);
+
+  if (rowsAltered > 0)
+    res.status(200).send({message: `Success: ${rowsAltered} rows deleted`});
+  else throw new NotFoundError('Movie Genre not found!');
+});
 export const genresRouter = router;
