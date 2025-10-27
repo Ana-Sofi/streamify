@@ -1,0 +1,26 @@
+meta {
+  name: genre_patch
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{SERVER_URL}}/api/genres/:id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 2
+}
+
+body:json {
+  {
+    "name": "Comedy"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

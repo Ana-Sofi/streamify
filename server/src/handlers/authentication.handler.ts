@@ -14,9 +14,17 @@ export const authenticationHandler: RequestHandler = async (req, res, next) => {
 
   const [, accessToken] = authHeader.split(' ');
   const secret = new TextEncoder().encode(process.env.SIGNING_SECRET);
-  const {payload} = (await jose.jwtVerify(accessToken, secret)) as {
-    payload: AccessTokenPayload;
-  };
+  let payload: AccessTokenPayload;
+  try {
+    const result = (await jose.jwtVerify(accessToken, secret)) as {
+      payload: AccessTokenPayload;
+    };
+    payload = result.payload;
+  } catch (err) {
+    if (err instanceof jose.errors.JWTExpired)
+      throw new UnauthorizedError('Token has expired!');
+    throw err;
+  }
 
   const profile = await getProfileById(payload.profileId);
   if (!profile) {

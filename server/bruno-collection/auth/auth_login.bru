@@ -17,6 +17,18 @@ body:json {
   }
 }
 
+script:post-response {
+  const token = res.body.accessToken;
+  
+  if (token) {
+    bru.setVar('AUTH_TOKEN', token);
+    console.log("Access token stored and applied to collection.");
+  } else {
+    console.warn("No accessToken found in response.");
+  }
+  
+}
+
 settings {
   encodeUrl: true
   timeout: 0

@@ -2,7 +2,7 @@ import {Router} from 'express';
 import {
   deleteMovie,
   getAllMovies,
-  getMovie,
+  getMovieById,
   insertMovie,
   patchMovie,
 } from '../repositories/movies.repository';
@@ -19,16 +19,16 @@ const router = Router();
 router.get('/', async (req, res, next) => {
   const movies = await getAllMovies();
 
-  res.send(movies);
+  res.status(200).send(movies);
 });
 
 router.get('/:id', async (req, res, next) => {
   const {id} = await idParamSchema.validate(req.params);
 
-  const movie = await getMovie(id);
+  const movie = await getMovieById(id);
 
   if (!movie) throw new NotFoundError('Movie not found!');
-  res.send(movie);
+  res.status(200).send(movie);
 });
 
 router.post('/', async (req, res, next) => {
@@ -42,10 +42,10 @@ router.post('/', async (req, res, next) => {
 });
 
 router.patch('/:id', async (req, res, next) => {
-  const movie = (await patchMovieSchema.validate({
+  const movie = await patchMovieSchema.validate({
     ...req.body,
     id: req.params.id,
-  })) as Id<Partial<Movie>>;
+  });
 
   const rowsAltered = await patchMovie(movie);
 

@@ -1,17 +1,17 @@
 meta {
-  name: movie_delete
+  name: genre_details
   type: http
-  seq: 5
+  seq: 3
 }
 
-delete {
-  url: {{SERVER_URL}}/api/movies/:id
+get {
+  url: {{SERVER_URL}}/api/genres/:id
   body: none
   auth: inherit
 }
 
 params:path {
-  id: 4
+  id: 2
 }
 
 settings {

@@ -1,0 +1,22 @@
+meta {
+  name: genre_new
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{SERVER_URL}}/api/genres
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Suspense"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
