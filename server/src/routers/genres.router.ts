@@ -98,4 +98,5 @@ router.delete('/:id/movies', async (req, res, next) => {
     res.status(200).send({message: `Success: ${rowsAltered} rows deleted`});
   else throw new NotFoundError('Movie Genre not found!');
 });
+
 export const genresRouter = router;

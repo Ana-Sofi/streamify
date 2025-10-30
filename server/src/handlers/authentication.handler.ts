@@ -21,8 +21,12 @@ export const authenticationHandler: RequestHandler = async (req, res, next) => {
     };
     payload = result.payload;
   } catch (err) {
-    if (err instanceof jose.errors.JWTExpired)
-      throw new UnauthorizedError('Token has expired!');
+    if (
+      err instanceof jose.errors.JWTExpired ||
+      err instanceof jose.errors.JWSInvalid ||
+      err instanceof jose.errors.JWSSignatureVerificationFailed
+    )
+      throw new UnauthorizedError('Invalid token!');
     throw err;
   }
 
@@ -31,6 +35,7 @@ export const authenticationHandler: RequestHandler = async (req, res, next) => {
     console.error('Error: Authentication attempt by non existing profile!');
     throw new HttpError(500);
   }
+  console.debug(profile);
   req.user = profile;
   delete (req.user as Optional<Profile, 'password'>).password;
 

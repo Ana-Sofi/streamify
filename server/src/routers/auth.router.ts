@@ -4,13 +4,17 @@ import * as jose from 'jose';
 import {UnauthorizedError} from '../errors/unauthorized.error';
 import {credentialsSchema} from '../validators/credentials.schema';
 import {
+  deleteProfile,
   getProfileByEmail,
   insertProfile,
+  patchProfile,
 } from '../repositories/profiles.repository';
 import {NotFoundError} from '../errors/not-found.error';
 import {newProfileSchema} from '../validators/new-profile.schema';
 import {ForbiddenError} from '../errors/forbidden.error';
 import {authenticate} from '../handlers/authentication.handler';
+import {patchProfileSchema} from '../validators/patch-profile.schema';
+import {BadRequestError} from '../errors/bad-request.error';
 
 const router: Router = Router();
 
@@ -52,6 +56,28 @@ router.post('/login', async (req, res, next) => {
 
 router.get('/me', authenticate, (req, res, next) => {
   res.status(200).send(req.user);
+});
+
+router.patch('/me', authenticate, async (req, res, next) => {
+  const profile = await patchProfileSchema.validate({
+    ...req.body,
+    id: req.user.id,
+  });
+  const rowsAltered = await patchProfile(profile);
+
+  if (rowsAltered === -1)
+    throw new BadRequestError('No fields to patch were given!');
+  else if (rowsAltered > 0)
+    res.status(200).send({message: `Success: ${rowsAltered} rows updated`});
+  else throw new NotFoundError('Profile not found!');
+});
+
+router.delete('/me', authenticate, async (req, res, next) => {
+  const rowsAltered = await deleteProfile(req.user.id);
+
+  if (rowsAltered > 0)
+    res.status(200).send({message: `Success: ${rowsAltered} rows deleted`});
+  else throw new NotFoundError('Profile not found!');
 });
 
 export const authRouter = router;

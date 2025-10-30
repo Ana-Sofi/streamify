@@ -2,6 +2,8 @@ import {PostgresError} from 'postgres';
 import {sql} from '../config/postgress-conntection';
 import {dbProfileToProfileModel} from '../mappers/profile.mapper';
 import {Profile} from '../model/profile.model';
+import {getPatchedFields} from '../utils/query.util';
+import {Id} from '../model/id.model';
 
 export type DbProfile = {
   profile_id: number;
@@ -11,9 +13,15 @@ export type DbProfile = {
   password: string;
 };
 
+export async function getAllProfiles() {
+  const dbProfiles = (await sql`
+    select * from streamify.profile
+  `) as DbProfile[];
+}
+
 export async function getProfileByEmail(email: string) {
   const dbProfiles = (await sql`
-    select * from streamify.profile where email = ${email}
+    select * from streamify.profile where email ILIKE ${email}
   `) as DbProfile[];
 
   const first = dbProfiles[0];
@@ -48,4 +56,33 @@ export async function insertProfile(profile: Profile) {
 
     throw err;
   }
+}
+
+export async function patchProfile(profile: Id<Partial<Profile>>) {
+  const patchedFields = getPatchedFields(
+    [
+      ['name', 'name'],
+      ['last_name', 'lastName'],
+      ['email', 'email'],
+      ['password', 'password'],
+    ],
+    profile,
+  );
+
+  if (patchedFields.length === 0) return -1;
+  const patchSql =
+    'update streamify.movie set ' +
+    patchedFields.map(([field], i) => `${field} = $${i + 1}`).join(', ') +
+    ` where profile_id = $${patchedFields.length + 1}`;
+  const values = patchedFields.map(([, value]) => value);
+  values.push(profile.id);
+
+  const result = await sql.unsafe(patchSql, values);
+  return result.count;
+}
+
+export async function deleteProfile(id: number) {
+  const result =
+    await sql`delete from streamify.profile where profile_id = ${id}`;
+  return result.count;
 }
