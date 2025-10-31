@@ -6,23 +6,23 @@ import {dbGenreToModelGenre} from '../mappers/genre.mapper';
 import {DbMovie} from './movies.repository';
 import {dbMovieToModelMovie} from '../mappers/movie.mapper';
 
-export async function getMovieGenres(id: number) {
+export async function getMovieGenres(movieId: number) {
   const dbGenres = (await sql`
     select g.* from streamify.movie_genre mg
     inner join streamify.genre g
       on mg.genre_id = g.genre_id
-    where mg.movie_id = ${id}
+    where mg.movie_id = ${movieId}
   `) as DbGenre[];
 
   return dbGenres.map(dbGenre => dbGenreToModelGenre(dbGenre));
 }
 
-export async function getGenreMovies(id: number) {
+export async function getGenreMovies(genreId: number) {
   const dbMovies = (await sql`
     select m.* from streamify.movie_genre mg
     inner join streamify.movie m
       on mg.movie_id = m.movie_id
-    where mg.genre_id = ${id}
+    where mg.genre_id = ${genreId}
   `) as DbMovie[];
 
   return dbMovies.map(dbMovie => dbMovieToModelMovie(dbMovie));

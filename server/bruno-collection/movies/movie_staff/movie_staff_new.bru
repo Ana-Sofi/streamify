@@ -1,0 +1,27 @@
+meta {
+  name: movie_staff_new
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{SERVER_URL}}/api/movies/:id/staff
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 1
+}
+
+body:json {
+  {
+    "staffMemberId": 30,
+    "roleName": "Tu abuelita"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

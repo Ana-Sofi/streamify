@@ -3,15 +3,15 @@ dotenv.config();
 import * as fs from 'fs';
 import {sql} from './postgress-conntection';
 
-async function makeDatabase() {
-  const dml = fs.readFileSync('./src/config/sql/streamify-dml.sql', {
+async function seedDatabase() {
+  const seeds = fs.readFileSync('./src/config/sql/streamify-seeds.sql', {
     encoding: 'utf-8',
   });
 
-  await sql.unsafe(dml);
+  await sql.unsafe(seeds);
   await sql.end();
 }
 
-makeDatabase()
-  .then(() => console.log('Schema created!'))
+seedDatabase()
+  .then(() => console.log('Database seeded!'))
   .catch(err => console.error(err));

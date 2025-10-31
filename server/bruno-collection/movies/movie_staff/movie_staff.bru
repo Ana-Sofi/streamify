@@ -1,0 +1,20 @@
+meta {
+  name: movie_staff
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{SERVER_URL}}/api/movies/:id/staff
+  body: none
+  auth: inherit
+}
+
+params:path {
+  id: 1
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,22 +1,22 @@
 meta {
-  name: movie_genre_delete
+  name: movie_staff_delete
   type: http
-  seq: 8
+  seq: 3
 }
 
 delete {
-  url: {{SERVER_URL}}/api/movies/:id/genres
+  url: {{SERVER_URL}}/api/movies/:id/staff
   body: json
   auth: inherit
 }
 
 params:path {
-  id: 3
+  id: 1
 }
 
 body:json {
   {
-    "genreId": 1
+    "id": 33
   }
 }
 

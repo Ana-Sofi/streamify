@@ -4,7 +4,7 @@ export const makeMapFunction =
     const target = {} as any;
     for (const [oField, tField] of fieldsMap) {
       const originField = prefix ? `${prefix}.${oField}` : oField;
-      target[tField] = origin[originField];
+      if (originField in origin) target[tField] = origin[originField];
     }
     return target;
   };

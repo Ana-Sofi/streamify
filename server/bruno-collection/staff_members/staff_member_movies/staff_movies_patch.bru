@@ -1,21 +1,21 @@
 meta {
-  name: genre_movies_new
+  name: staff_movies_patch
   type: http
-  seq: 7
+  seq: 3
 }
 
-post {
-  url: {{SERVER_URL}}/api/genres/:id/movies
+patch {
+  url: {{SERVER_URL}}/api/staff/:id/movies
   body: json
   auth: inherit
 }
 
 params:path {
-  id: 1
+  id: 30
 }
 
 body:json {
-  { "movieId": 3 }
+  {"roleName": "Tia", "id": 34}
 }
 
 settings {

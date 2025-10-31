@@ -20,7 +20,8 @@
     "posttest": "pnpm run lint",
     "start": "node build/src/index.js",
     "start:dev": "nodemon",
-    "database:create": "ts-node src/config/make-database.ts"
+    "database:create": "node build/src/config/make-database.js",
+    "database:seed": "node build/src/config/seed-database.js"
   },
   "devDependencies": {
     "@types/express": "^5.0.3",

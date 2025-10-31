@@ -1,0 +1,26 @@
+meta {
+  name: movie_genre_delete
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{SERVER_URL}}/api/movies/:id/genres
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 3
+}
+
+body:json {
+  {
+    "genreId": 1
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
