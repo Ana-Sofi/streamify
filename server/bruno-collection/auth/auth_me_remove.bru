@@ -1,19 +1,17 @@
 meta {
-  name: atuh_me_patch
+  name: auth_me_remove
   type: http
-  seq: 4
+  seq: 5
 }
 
-patch {
+delete {
   url: {{SERVER_URL}}/api/auth/me
-  body: json
+  body: none
   auth: inherit
 }
 
-body:json {
-  {
-    "password": "12345"
-  }
+script:post-response {
+  bru.setVar('AUTH_TOKEN', 'placeholder');
 }
 
 settings {

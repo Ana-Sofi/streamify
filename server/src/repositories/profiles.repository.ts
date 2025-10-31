@@ -71,7 +71,7 @@ export async function patchProfile(profile: Id<Partial<Profile>>) {
 
   if (patchedFields.length === 0) return -1;
   const patchSql =
-    'update streamify.movie set ' +
+    'update streamify.profile set ' +
     patchedFields.map(([field], i) => `${field} = $${i + 1}`).join(', ') +
     ` where profile_id = $${patchedFields.length + 1}`;
   const values = patchedFields.map(([, value]) => value);

@@ -35,7 +35,6 @@ export const authenticationHandler: RequestHandler = async (req, res, next) => {
     console.error('Error: Authentication attempt by non existing profile!');
     throw new HttpError(500);
   }
-  console.debug(profile);
   req.user = profile;
   delete (req.user as Optional<Profile, 'password'>).password;
 

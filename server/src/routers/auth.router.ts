@@ -63,6 +63,9 @@ router.patch('/me', authenticate, async (req, res, next) => {
     ...req.body,
     id: req.user.id,
   });
+
+  if (profile.password) profile.password = await argon2.hash(profile.password);
+
   const rowsAltered = await patchProfile(profile);
 
   if (rowsAltered === -1)
