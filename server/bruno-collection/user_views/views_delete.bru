@@ -1,0 +1,22 @@
+meta {
+  name: views_delete
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{SERVER_URL}}/api/views
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "movieId": 1
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

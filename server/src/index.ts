@@ -10,6 +10,7 @@ import {authRouter} from './routers/auth.router';
 import {moviesRouter} from './routers/movies.router';
 import {genresRouter} from './routers/genres.router';
 import {staffMemberRouter} from './routers/staff-members.router';
+import {viewsRouter} from './routers/views.router';
 
 const port = 3000;
 const app = express();
@@ -23,6 +24,7 @@ app.use(authenticationHandler);
 app.use('/api/movies', moviesRouter);
 app.use('/api/genres', genresRouter);
 app.use('/api/staff', staffMemberRouter);
+app.use('/api/views', viewsRouter);
 
 // Keep at the bottom of routes
 app.use(errorHandler);

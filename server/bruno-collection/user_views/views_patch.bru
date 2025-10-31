@@ -1,0 +1,23 @@
+meta {
+  name: views_patch
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{SERVER_URL}}/api/views
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "movieId": 1,
+    "score": 3
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

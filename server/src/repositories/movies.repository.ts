@@ -67,3 +67,16 @@ export async function deleteMovie(id: number) {
   const result = await sql`delete from streamify.movie where movie_id = ${id}`;
   return result.count;
 }
+
+export async function updateMovieAverage(movieId: number) {
+  const result = await sql`
+    update streamify.movie m
+    set score_average = (
+      select avg(v.score)
+      from streamify.view v
+      where v.movie_id = m.movie_id
+    ) where m.movie_id = ${movieId}
+  `;
+
+  return result.count;
+}
