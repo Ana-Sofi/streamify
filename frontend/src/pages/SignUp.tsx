@@ -1,14 +1,6 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useAuth } from "../hooks/useAuth";
 import type { Profile } from "../model/streamify.model";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -57,73 +49,95 @@ export function SignUp() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p>Loading...</p>
+      <div className="flex items-center justify-center min-h-screen bg-black">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-12 h-12 border-4 border-[#e50914] border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-white/70 text-sm">Loading...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-2xl">Create an Account</CardTitle>
-          <CardDescription>
-            Welcome! Please fill in your details to get started
-          </CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <CardContent className="space-y-4">
+    <div className="min-h-screen bg-black flex items-center justify-center py-12">
+      <div className="w-full max-w-md mx-4">
+        {/* Logo/Brand */}
+        <div className="text-center mb-10">
+          <h1 className="text-5xl font-bold text-[#e50914] mb-2 tracking-tight">
+            STREAMIFY
+          </h1>
+          <p className="text-white/60 text-lg">Start your entertainment journey</p>
+        </div>
+
+        {/* Signup Form */}
+        <div className="bg-black/60 backdrop-blur-xl rounded-lg border border-white/10 p-8 shadow-2xl">
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-white mb-2">Join Streamify</h2>
+            <p className="text-white/60">Create your account to get started</p>
+          </div>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             {error && (
-              <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
+              <div className="p-4 text-sm text-white bg-[#e50914]/20 border border-[#e50914]/50 rounded-md backdrop-blur-sm">
                 {error}
               </div>
             )}
 
-            <div className="space-y-2">
-              <Label htmlFor="name">First Name</Label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="John"
-                {...register("name", {
-                  required: "First name is required",
-                  minLength: {
-                    value: 2,
-                    message: "First name must be at least 2 characters",
-                  },
-                })}
-              />
-              {errors.name && (
-                <p className="text-sm text-red-600">{errors.name.message}</p>
-              )}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-white text-sm font-medium">
+                  First Name
+                </Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="John"
+                  className="bg-neutral-900/50 border-white/10 text-white placeholder:text-white/40 h-11 focus:border-[#e50914] focus:ring-[#e50914]/20"
+                  {...register("name", {
+                    required: "First name is required",
+                    minLength: {
+                      value: 2,
+                      message: "First name must be at least 2 characters",
+                    },
+                  })}
+                />
+                {errors.name && (
+                  <p className="text-sm text-[#e50914]">{errors.name.message}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="lastName" className="text-white text-sm font-medium">
+                  Last Name
+                </Label>
+                <Input
+                  id="lastName"
+                  type="text"
+                  placeholder="Doe"
+                  className="bg-neutral-900/50 border-white/10 text-white placeholder:text-white/40 h-11 focus:border-[#e50914] focus:ring-[#e50914]/20"
+                  {...register("lastName", {
+                    required: "Last name is required",
+                    minLength: {
+                      value: 2,
+                      message: "Last name must be at least 2 characters",
+                    },
+                  })}
+                />
+                {errors.lastName && (
+                  <p className="text-sm text-[#e50914]">{errors.lastName.message}</p>
+                )}
+              </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="lastName">Last Name</Label>
-              <Input
-                id="lastName"
-                type="text"
-                placeholder="Doe"
-                {...register("lastName", {
-                  required: "Last name is required",
-                  minLength: {
-                    value: 2,
-                    message: "Last name must be at least 2 characters",
-                  },
-                })}
-              />
-              {errors.lastName && (
-                <p className="text-sm text-red-600">{errors.lastName.message}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-white text-sm font-medium">
+                Email Address
+              </Label>
               <Input
                 id="email"
                 type="email"
                 placeholder="you@example.com"
+                className="bg-neutral-900/50 border-white/10 text-white placeholder:text-white/40 h-11 focus:border-[#e50914] focus:ring-[#e50914]/20"
                 {...register("email", {
                   required: "Email is required",
                   pattern: {
@@ -133,16 +147,19 @@ export function SignUp() {
                 })}
               />
               {errors.email && (
-                <p className="text-sm text-red-600">{errors.email.message}</p>
+                <p className="text-sm text-[#e50914]">{errors.email.message}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-white text-sm font-medium">
+                Password
+              </Label>
               <Input
                 id="password"
                 type="password"
                 placeholder="••••••••"
+                className="bg-neutral-900/50 border-white/10 text-white placeholder:text-white/40 h-11 focus:border-[#e50914] focus:ring-[#e50914]/20"
                 {...register("password", {
                   required: "Password is required",
                   minLength: {
@@ -152,16 +169,19 @@ export function SignUp() {
                 })}
               />
               {errors.password && (
-                <p className="text-sm text-red-600">{errors.password.message}</p>
+                <p className="text-sm text-[#e50914]">{errors.password.message}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Label htmlFor="confirmPassword" className="text-white text-sm font-medium">
+                Confirm Password
+              </Label>
               <Input
                 id="confirmPassword"
                 type="password"
                 placeholder="••••••••"
+                className="bg-neutral-900/50 border-white/10 text-white placeholder:text-white/40 h-11 focus:border-[#e50914] focus:ring-[#e50914]/20"
                 {...register("confirmPassword", {
                   required: "Please confirm your password",
                   validate: (value) =>
@@ -169,30 +189,45 @@ export function SignUp() {
                 })}
               />
               {errors.confirmPassword && (
-                <p className="text-sm text-red-600">
+                <p className="text-sm text-[#e50914]">
                   {errors.confirmPassword.message}
                 </p>
               )}
             </div>
-          </CardContent>
 
-          <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Creating account..." : "Sign up"}
+            <Button
+              type="submit"
+              className="w-full h-12 bg-[#e50914] hover:bg-[#b20710] text-white font-semibold text-base transition-all duration-200 shadow-lg shadow-[#e50914]/20"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <span className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Creating account...
+                </span>
+              ) : (
+                "Create Account"
+              )}
             </Button>
+          </form>
 
-            <p className="text-sm text-center text-gray-600">
+          <div className="mt-8 text-center">
+            <p className="text-white/60 text-sm">
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="font-medium text-blue-600 hover:text-blue-500"
+                className="text-white font-semibold hover:text-[#e50914] transition-colors"
               >
                 Sign in
               </Link>
             </p>
-          </CardFooter>
-        </form>
-      </Card>
+          </div>
+        </div>
+
+        <p className="text-center text-white/40 text-xs mt-8">
+          By signing up, you agree to our Terms of Service and Privacy Policy.
+        </p>
+      </div>
     </div>
   );
 }

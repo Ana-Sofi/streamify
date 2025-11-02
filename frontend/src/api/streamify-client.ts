@@ -1,4 +1,4 @@
-import type { Id, Profile } from "../model/streamify.model";
+import type { Id, Profile, Movie, ViewAggregated } from "../model/streamify.model";
 
 class StreamifyClient {
   private baseHeaders: Record<string, string> = {
@@ -88,6 +88,32 @@ class StreamifyClient {
 
   hasToken() {
     return this.accessToken.length > 0;
+  }
+
+  async getMovies() {
+    const response = await fetch("/api/movies", {
+      method: "GET",
+      headers: this.authHeaders,
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch movies");
+    }
+
+    return (await response.json()) as Id<Movie>[];
+  }
+
+  async getViews() {
+    const response = await fetch("/api/views", {
+      method: "GET",
+      headers: this.authHeaders,
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch views");
+    }
+
+    return (await response.json()) as ViewAggregated[];
   }
 }
 
