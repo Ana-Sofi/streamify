@@ -158,6 +158,50 @@ class StreamifyClient {
 
     return response.json();
   }
+
+  async createMovie(movie: Omit<Movie, "viewCount" | "scoreAverage">) {
+    const response = await fetch("/api/movies", {
+      method: "POST",
+      headers: this.authHeaders,
+      body: JSON.stringify(movie),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to create movie");
+    }
+
+    return response.json();
+  }
+
+  async updateMovie(id: number, movie: Partial<Movie>) {
+    const response = await fetch(`/api/movies/${id}`, {
+      method: "PATCH",
+      headers: this.authHeaders,
+      body: JSON.stringify(movie),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to update movie");
+    }
+
+    return response.json();
+  }
+
+  async deleteMovie(id: number) {
+    const response = await fetch(`/api/movies/${id}`, {
+      method: "DELETE",
+      headers: this.authHeaders,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to delete movie");
+    }
+
+    return response.json();
+  }
 }
 
 export const streamifyClient = new StreamifyClient();

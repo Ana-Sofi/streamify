@@ -5,6 +5,9 @@ import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
 import { SignUp } from "./pages/SignUp";
 import { CardDemo } from "./pages/TestPage";
+import { AdminDashboard } from "./pages/admin/AdminDashboard";
+import { MoviesList } from "./pages/admin/MoviesList";
+import { MovieForm } from "./pages/admin/MovieForm";
 import { AuthProvider } from "./hooks/useAuth";
 
 const router = createBrowserRouter([
@@ -12,6 +15,10 @@ const router = createBrowserRouter([
   { path: "/login", Component: Login },
   { path: "/signup", Component: SignUp },
   { path: "/test", Component: CardDemo },
+  { path: "/admin", Component: AdminDashboard },
+  { path: "/admin/movies", Component: MoviesList },
+  { path: "/admin/movies/new", Component: MovieForm },
+  { path: "/admin/movies/:id/edit", Component: MovieForm },
 ]);
 
 function App() {

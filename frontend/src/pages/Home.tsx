@@ -101,6 +101,14 @@ export function Home() {
             </h1>
             
             <div className="flex items-center gap-6">
+              <Button
+                onClick={() => navigate("/admin")}
+                variant="outline"
+                className="border-white/20 text-white hover:bg-white/10 hover:text-white"
+              >
+                Admin Panel
+              </Button>
+              
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#e50914]/20 flex items-center justify-center border border-[#e50914]/30">
                   <span className="text-[#e50914] font-bold text-lg">
