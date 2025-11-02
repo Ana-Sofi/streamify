@@ -115,6 +115,49 @@ class StreamifyClient {
 
     return (await response.json()) as ViewAggregated[];
   }
+
+  async getMovieById(id: number) {
+    const response = await fetch(`/api/movies/${id}`, {
+      method: "GET",
+      headers: this.authHeaders,
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch movie");
+    }
+
+    return (await response.json()) as Id<Movie>;
+  }
+
+  async createView(movieId: number, score: number) {
+    const response = await fetch("/api/views", {
+      method: "POST",
+      headers: this.authHeaders,
+      body: JSON.stringify({ movieId, score }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to create view");
+    }
+
+    return response.json();
+  }
+
+  async updateView(movieId: number, score: number) {
+    const response = await fetch("/api/views", {
+      method: "PATCH",
+      headers: this.authHeaders,
+      body: JSON.stringify({ movieId, score }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to update view");
+    }
+
+    return response.json();
+  }
 }
 
 export const streamifyClient = new StreamifyClient();

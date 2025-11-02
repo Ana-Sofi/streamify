@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { streamifyClient } from "../api/streamify-client";
 import type { Id, Movie, ViewAggregated } from "../model/streamify.model";
 import { MovieCard } from "../components/MovieCard";
+import { MovieRatingModal } from "../components/MovieRatingModal";
 
 export function Home() {
   const { isLoading } = useProtectedRoute();
@@ -14,6 +15,8 @@ export function Home() {
   const [movies, setMovies] = useState<Id<Movie>[]>([]);
   const [views, setViews] = useState<ViewAggregated[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
+  const [selectedMovie, setSelectedMovie] = useState<Id<Movie> | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,6 +42,41 @@ export function Home() {
   const handleLogout = () => {
     logout();
     navigate("/login");
+  };
+
+  const handleMovieClick = (movie: Id<Movie>) => {
+    setSelectedMovie(movie);
+    setIsModalOpen(true);
+  };
+
+  const handleRatingSubmit = async (movieId: number, rating: number) => {
+    // Check if user already has a view for this movie
+    const existingView = views.find((v) => v.movie.id === movieId);
+
+    if (existingView) {
+      // Update existing view
+      await streamifyClient.updateView(movieId, rating);
+    } else {
+      // Create new view
+      await streamifyClient.createView(movieId, rating);
+    }
+
+    // Fetch updated movie data
+    const updatedMovie = await streamifyClient.getMovieById(movieId);
+
+    // Update the movie in the movies list
+    setMovies((prevMovies) =>
+      prevMovies.map((m) => (m.id === movieId ? updatedMovie : m))
+    );
+
+    // Refresh views list
+    const updatedViews = await streamifyClient.getViews();
+    setViews(updatedViews);
+  };
+
+  const getExistingRating = (movieId: number): number | undefined => {
+    const view = views.find((v) => v.movie.id === movieId);
+    return view?.score;
   };
 
   if (isLoading) {
@@ -141,9 +179,10 @@ export function Home() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {views.map((view) => (
                       <MovieCard
-                        key={view.movie.name}
-                        movie={view.movie as Id<Movie>}
+                        key={view.movie.id}
+                        movie={view.movie}
                         userScore={view.score}
+                        onClick={() => handleMovieClick(view.movie)}
                       />
                     ))}
                   </div>
@@ -194,7 +233,11 @@ export function Home() {
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {movies.map((movie) => (
-                      <MovieCard key={movie.id} movie={movie} />
+                      <MovieCard
+                        key={movie.id}
+                        movie={movie}
+                        onClick={() => handleMovieClick(movie)}
+                      />
                     ))}
                   </div>
                 )}
@@ -203,6 +246,17 @@ export function Home() {
           )}
         </div>
       </div>
+
+      {/* Rating Modal */}
+      {selectedMovie && (
+        <MovieRatingModal
+          movie={selectedMovie}
+          existingRating={getExistingRating(selectedMovie.id)}
+          open={isModalOpen}
+          onOpenChange={setIsModalOpen}
+          onSubmit={handleRatingSubmit}
+        />
+      )}
     </div>
   );
 }

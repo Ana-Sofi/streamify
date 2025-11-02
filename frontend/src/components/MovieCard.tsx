@@ -4,14 +4,18 @@ import { StarRating } from "./StarRating";
 interface MovieCardProps {
   movie: Id<Movie>;
   userScore?: number; // If provided, shows "Your Rating" instead of average
+  onClick?: () => void;
 }
 
-export function MovieCard({ movie, userScore }: MovieCardProps) {
+export function MovieCard({ movie, userScore, onClick }: MovieCardProps) {
   const displayScore = userScore ?? movie.scoreAverage;
   const scoreLabel = userScore !== undefined ? "Your Rating" : "Average Rating";
 
   return (
-    <div className="group bg-neutral-900/50 border border-white/10 rounded-lg overflow-hidden hover:border-[#e50914]/50 transition-all duration-300">
+    <div 
+      onClick={onClick}
+      className="group bg-neutral-900/50 border border-white/10 rounded-lg overflow-hidden hover:border-[#e50914]/50 transition-all duration-300 cursor-pointer"
+    >
       {/* Placeholder Image */}
       <div className="aspect-video bg-gradient-to-br from-neutral-800 to-neutral-900 flex items-center justify-center relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#e50914]/10 to-transparent"></div>
