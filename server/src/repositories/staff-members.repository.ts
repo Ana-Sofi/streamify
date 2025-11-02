@@ -5,7 +5,7 @@ import {StaffMember} from '../model/staff-member.model';
 import {getPatchedFields} from '../utils/query.util';
 
 export type DbStaffMember = {
-  staff_member_id: string;
+  staff_member_id: number;
   name: string;
   last_name: string;
 };

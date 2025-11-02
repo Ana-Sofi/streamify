@@ -1,12 +1,13 @@
 import {Movie} from '../model/movie.model';
 import {Id} from '../model/id.model';
 import {DbMovie} from '../repositories/movies.repository';
-import {makeMapFunction} from '../utils/map.util';
 
-export const dbMovieToModelMovie = makeMapFunction([
-  ['movie_id', 'id'],
-  ['name', 'name'],
-  ['description', 'description'],
-  ['score_average', 'scoreAverage'],
-  ['view_count', 'viewCount'],
-]) as (dbMovie: DbMovie) => Id<Movie>;
+export const dbMovieToModelMovie = (dbMovie: DbMovie): Id<Movie> => {
+  return {
+    id: dbMovie.movie_id,
+    name: dbMovie.name,
+    description: dbMovie.description,
+    scoreAverage: parseFloat(dbMovie.score_average) || 0,
+    viewCount: dbMovie.view_count,
+  };
+};

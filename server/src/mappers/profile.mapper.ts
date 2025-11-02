@@ -1,11 +1,13 @@
 import {DbProfile} from '../repositories/profiles.repository';
 import {Id} from '../model/id.model';
 import {Profile} from '../model/profile.model';
-import {makeMapFunction} from '../utils/map.util';
 
-export const dbProfileToProfileModel = makeMapFunction([
-  ['profile_id', 'id'],
-  ['name', 'name'],
-  ['email', 'email'],
-  ['password', 'password'],
-]) as (dbProfile: DbProfile, prefix?: string) => Id<Profile>;
+export const dbProfileToProfileModel = (dbProfile: DbProfile): Id<Profile> => {
+  return {
+    id: dbProfile.profile_id,
+    name: dbProfile.name,
+    lastName: dbProfile.last_name,
+    email: dbProfile.email,
+    password: dbProfile.password,
+  };
+};

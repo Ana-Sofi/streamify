@@ -1,23 +1,24 @@
 import {DbMovieStaff} from '../repositories/movie-staff.repository';
-import {makeMapFunction} from '../utils/map.util';
 import {dbMovieToModelMovie} from './movie.mapper';
 import {dbStaffMemberToModelStaffMember} from './staff-member.mapper';
 import {Id} from '../model/id.model';
 import {MovieStaffAggregated} from '../model/movie-staff.model';
 
-const dbMSToMSModel = makeMapFunction([
-  ['movie_staff_id', 'id'],
-  ['role_name', 'roleName'],
-]);
+export const toMovieStaffAggregated = (
+  dbMovieStaff: DbMovieStaff
+): Id<Partial<MovieStaffAggregated> & {roleName: string}> => {
+  const result: any = {
+    id: dbMovieStaff.movie_staff_id,
+    roleName: dbMovieStaff.role_name,
+  };
 
-export const toMovieStaffAggregated = ((dbMovieStaff: DbMovieStaff) => {
-  const mapping = dbMSToMSModel(dbMovieStaff);
+  if (dbMovieStaff.movie?.[0]) {
+    result.movie = dbMovieToModelMovie(dbMovieStaff.movie[0]);
+  }
 
-  const {staff_member, movie} = dbMovieStaff;
-  if (staff_member && staff_member[0])
-    mapping.member = dbStaffMemberToModelStaffMember(staff_member[0]);
+  if (dbMovieStaff.staff_member?.[0]) {
+    result.member = dbStaffMemberToModelStaffMember(dbMovieStaff.staff_member[0]);
+  }
 
-  if (movie && movie[0]) mapping.movie = dbMovieToModelMovie(movie[0]);
-
-  return mapping;
-}) as (dbMovieStaff: DbMovieStaff) => Id<MovieStaffAggregated>;
+  return result;
+};

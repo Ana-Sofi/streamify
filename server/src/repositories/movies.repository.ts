@@ -9,7 +9,7 @@ export type DbMovie = {
   name: string;
   description: string;
   view_count: number;
-  score_average: number;
+  score_average: string; // PostgreSQL DECIMAL returns as string
 };
 
 export async function getAllMovies() {
