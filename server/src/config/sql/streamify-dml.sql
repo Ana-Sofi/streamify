@@ -25,8 +25,8 @@ CREATE TABLE IF NOT EXISTS View (
     profile_id INT NOT NULL,
     movie_id INT NOT NULL,
     PRIMARY KEY (movie_id, profile_id),
-    CONSTRAINT fk_profile FOREIGN KEY (profile_id) REFERENCES Profile (profile_id),
-    CONSTRAINT fk_movie FOREIGN KEY (movie_id) REFERENCES Movie (movie_id)
+    CONSTRAINT fk_profile FOREIGN KEY (profile_id) REFERENCES Profile (profile_id) ON DELETE CASCADE,
+    CONSTRAINT fk_movie FOREIGN KEY (movie_id) REFERENCES Movie (movie_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Genre (
@@ -39,8 +39,8 @@ CREATE TABLE IF NOT EXISTS Movie_Genre (
     genre_id INT NOT NULL,
     movie_id INT NOT NULL,
     PRIMARY KEY (genre_id, movie_id),
-    CONSTRAINT fk_genre FOREIGN KEY (genre_id) REFERENCES Genre (genre_id),
-    CONSTRAINT fk_movie FOREIGN KEY (movie_id) REFERENCES Movie (movie_id)
+    CONSTRAINT fk_genre FOREIGN KEY (genre_id) REFERENCES Genre (genre_id) ON DELETE CASCADE,
+    CONSTRAINT fk_movie FOREIGN KEY (movie_id) REFERENCES Movie (movie_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Staff_Member (
@@ -56,6 +56,6 @@ CREATE TABLE IF NOT EXISTS Movie_Staff (
     movie_id INT NOT NULL,
     staff_member_id INT NOT NULL,
     PRIMARY KEY (movie_staff_id),
-    CONSTRAINT fk_movie FOREIGN KEY (movie_id) REFERENCES Movie (movie_id),
-    CONSTRAINT fk_staff_member FOREIGN KEY (staff_member_id) REFERENCES Staff_Member (staff_member_id)
+    CONSTRAINT fk_movie FOREIGN KEY (movie_id) REFERENCES Movie (movie_id) ON DELETE CASCADE,
+    CONSTRAINT fk_staff_member FOREIGN KEY (staff_member_id) REFERENCES Staff_Member (staff_member_id) ON DELETE CASCADE
 );
