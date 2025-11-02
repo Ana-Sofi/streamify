@@ -1,5 +1,9 @@
 export type Id<T extends {}> = { id: number } & T;
 
+export type Genre = {
+  name: string;
+};
+
 export type Credentials = {
   email: string;
   password: string;

@@ -8,6 +8,8 @@ import { CardDemo } from "./pages/TestPage";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import { MoviesList } from "./pages/admin/MoviesList";
 import { MovieForm } from "./pages/admin/MovieForm";
+import { GenresList } from "./pages/admin/GenresList";
+import { GenreForm } from "./pages/admin/GenreForm";
 import { AuthProvider } from "./hooks/useAuth";
 
 const router = createBrowserRouter([
@@ -19,6 +21,9 @@ const router = createBrowserRouter([
   { path: "/admin/movies", Component: MoviesList },
   { path: "/admin/movies/new", Component: MovieForm },
   { path: "/admin/movies/:id/edit", Component: MovieForm },
+  { path: "/admin/genres", Component: GenresList },
+  { path: "/admin/genres/new", Component: GenreForm },
+  { path: "/admin/genres/:id/edit", Component: GenreForm },
 ]);
 
 function App() {

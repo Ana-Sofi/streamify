@@ -75,6 +75,35 @@ Let's not worry about relationships for now let's create the following for each 
   - Delete option: ask for confirmation
   - View option: display a modal with the details of the record and link again edit or delete
   - Add a link to create new records
+  - Add client side search by name
 [] `/new` Form to create a new record of current resource
 [] `/:id/edit` Form that loads existing data and let's you edit resrouce for a given id
 [] Add `Go back` options in each view
+
+### 7. Junction data management
+[] In the edit view of the main resources add options to edit relationship data
+[] Selecting this option should show a table with 2 columns:
+  - Left side displays already related items
+  - Right side displays items that can be added
+  - Left column has option to remove
+  - Right column has option to add
+  - Add or remove options are somewhere in the ui and are only available when an option is selected
+  - Each operation makes an api call to POST or DELETE the junction record
+  - No new edits can be done while there is one in progress.
+
+### 7.1 Movies and Genres example:
+Left side shows genres already in movie with given id. Data from `GET /api/movies/:id/genres`
+Right side shows genres not in movie with given id. Data from `GET /api/genres` get difference with genres already in movie.
+Removing genres from left side `DELETE /api/movies/:id/genres` and refreshes right side.
+Adding genres to movie `POST /api/movies/:id/genres
+
+### 7.2 Movies and Staff_Members example:
+Left side shows staff already in movie with given id. Data from `GET /api/movies/:id/staff`
+Right side shows staff not in movie with given id. Data from `GET /api/staff` get set difference with staff already in movie.
+This has a caveat Movie_Staff requires role name:
+  - Display a field at the botton will display the role for existing Movie_Staff (data on left side)
+  - Clicking on a staff member (right side) will display the role field empty and is required to add new record to movie.
+Removing staff from left side `DELETE /api/movies/:id/staff` and refreshes right side.
+Adding staff to movie `POST /api/movies/:id/staff
+
+### 7.3 

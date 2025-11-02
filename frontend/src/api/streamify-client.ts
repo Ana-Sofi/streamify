@@ -1,4 +1,4 @@
-import type { Id, Profile, Movie, ViewAggregated } from "../model/streamify.model";
+import type { Id, Profile, Movie, ViewAggregated, Genre } from "../model/streamify.model";
 
 class StreamifyClient {
   private baseHeaders: Record<string, string> = {
@@ -198,6 +198,77 @@ class StreamifyClient {
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || "Failed to delete movie");
+    }
+
+    return response.json();
+  }
+
+  // Genres
+  async getGenres(): Promise<Id<Genre>[]> {
+    const response = await fetch("/api/genres", {
+      headers: this.authHeaders,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to fetch genres");
+    }
+
+    return response.json();
+  }
+
+  async getGenreById(id: number): Promise<Id<Genre>> {
+    const response = await fetch(`/api/genres/${id}`, {
+      headers: this.authHeaders,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to fetch genre");
+    }
+
+    return response.json();
+  }
+
+  async createGenre(genre: Genre) {
+    const response = await fetch("/api/genres", {
+      method: "POST",
+      headers: this.authHeaders,
+      body: JSON.stringify(genre),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to create genre");
+    }
+
+    return response.json();
+  }
+
+  async updateGenre(id: number, genre: Partial<Genre>) {
+    const response = await fetch(`/api/genres/${id}`, {
+      method: "PATCH",
+      headers: this.authHeaders,
+      body: JSON.stringify(genre),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to update genre");
+    }
+
+    return response.json();
+  }
+
+  async deleteGenre(id: number) {
+    const response = await fetch(`/api/genres/${id}`, {
+      method: "DELETE",
+      headers: this.authHeaders,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to delete genre");
     }
 
     return response.json();
