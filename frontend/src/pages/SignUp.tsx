@@ -1,6 +1,6 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useAuth } from "../hooks/useAuth";
-import type { Credentials } from "../model/streamify.model";
+import type { Profile } from "../model/streamify.model";
 import {
   Card,
   CardContent,
@@ -15,16 +15,19 @@ import { Label } from "@/components/ui/label";
 import { useNavigate, Link } from "react-router";
 import { useEffect, useState } from "react";
 
-export function Login() {
+export function SignUp() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Credentials>();
-  const { login, isAuthenticated, isLoading } = useAuth();
+    watch,
+  } = useForm<Profile & { confirmPassword: string }>();
+  const { register: registerUser, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const password = watch("password");
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -32,15 +35,20 @@ export function Login() {
     }
   }, [isAuthenticated, navigate]);
 
-  const onSubmit: SubmitHandler<Credentials> = async (data) => {
+  const onSubmit: SubmitHandler<Profile & { confirmPassword: string }> = async (
+    data
+  ) => {
     setError("");
     setIsSubmitting(true);
     try {
-      await login(data.email, data.password);
-      navigate("/");
+      const { confirmPassword, ...profileData } = data;
+      await registerUser(profileData);
+      navigate("/login");
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Failed to login. Please try again."
+        err instanceof Error
+          ? err.message
+          : "Failed to create account. Please try again."
       );
     } finally {
       setIsSubmitting(false);
@@ -59,9 +67,9 @@ export function Login() {
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl">Welcome to Streamify</CardTitle>
+          <CardTitle className="text-2xl">Create an Account</CardTitle>
           <CardDescription>
-            Sign in to your account to continue
+            Welcome! Please fill in your details to get started
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -71,6 +79,44 @@ export function Login() {
                 {error}
               </div>
             )}
+
+            <div className="space-y-2">
+              <Label htmlFor="name">First Name</Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="John"
+                {...register("name", {
+                  required: "First name is required",
+                  minLength: {
+                    value: 2,
+                    message: "First name must be at least 2 characters",
+                  },
+                })}
+              />
+              {errors.name && (
+                <p className="text-sm text-red-600">{errors.name.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="lastName">Last Name</Label>
+              <Input
+                id="lastName"
+                type="text"
+                placeholder="Doe"
+                {...register("lastName", {
+                  required: "Last name is required",
+                  minLength: {
+                    value: 2,
+                    message: "Last name must be at least 2 characters",
+                  },
+                })}
+              />
+              {errors.lastName && (
+                <p className="text-sm text-red-600">{errors.lastName.message}</p>
+              )}
+            </div>
 
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -109,24 +155,39 @@ export function Login() {
                 <p className="text-sm text-red-600">{errors.password.message}</p>
               )}
             </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder="••••••••"
+                {...register("confirmPassword", {
+                  required: "Please confirm your password",
+                  validate: (value) =>
+                    value === password || "Passwords do not match",
+                })}
+              />
+              {errors.confirmPassword && (
+                <p className="text-sm text-red-600">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
+            </div>
           </CardContent>
 
           <CardFooter className="flex flex-col space-y-4">
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Signing in..." : "Sign in"}
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? "Creating account..." : "Sign up"}
             </Button>
 
             <p className="text-sm text-center text-gray-600">
-              Don't have an account?{" "}
+              Already have an account?{" "}
               <Link
-                to="/signup"
+                to="/login"
                 className="font-medium text-blue-600 hover:text-blue-500"
               >
-                Sign up
+                Sign in
               </Link>
             </p>
           </CardFooter>
@@ -135,3 +196,4 @@ export function Login() {
     </div>
   );
 }
+

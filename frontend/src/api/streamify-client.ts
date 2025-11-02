@@ -35,39 +35,59 @@ class StreamifyClient {
   }
 
   async authenticate(credentials: { email: string; password: string }) {
-    try {
-      const response = await fetch("/api/auth", {
-        method: "POST",
-        headers: this.baseHeaders,
-        body: JSON.stringify(credentials),
-      });
+    const response = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: this.baseHeaders,
+      body: JSON.stringify(credentials),
+    });
 
-      const { accessToken } = (await response.json()) as {
-        accessToken: string;
-      };
-      this.accessToken = accessToken;
-      this.saveTokenToStorage(accessToken);
-    } catch (err) {}
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Authentication failed");
+    }
+
+    const { accessToken } = (await response.json()) as {
+      accessToken: string;
+    };
+    this.accessToken = accessToken;
+    this.saveTokenToStorage(accessToken);
   }
 
   async register(profile: Profile) {
-    try {
-      await fetch("/api/auth/register", {
-        method: "POST",
-        headers: this.baseHeaders,
-        body: JSON.stringify(profile),
-      });
-    } catch (err) {}
+    const response = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: this.baseHeaders,
+      body: JSON.stringify(profile),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Registration failed");
+    }
+
+    return response.json();
   }
 
   async getCurrentUser() {
-    try {
-      const response = await fetch("/api/auth/me", {
-        method: "GET",
-        headers: this.baseHeaders,
-      });
-      return (await response.json()) as Id<Omit<Profile, "password">>;
-    } catch (err) {}
+    const response = await fetch("/api/auth/me", {
+      method: "GET",
+      headers: this.authHeaders,
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch current user");
+    }
+
+    return (await response.json()) as Id<Omit<Profile, "password">>;
+  }
+
+  clearToken() {
+    this.accessToken = "";
+    localStorage.removeItem("streamify-token");
+  }
+
+  hasToken() {
+    return this.accessToken.length > 0;
   }
 }
 
