@@ -119,3 +119,20 @@ Exact same steps as 7.2 but from Staff_Member perspective (within Staff_Member e
   - Right `GET /api/movies`.
   - Adding `POST /api/staff/:id/movies`
   - Removing `DELETE /api/staff/:id/movies`
+
+### 8. Home view expanding the movie modal
+[] Make the modal larger
+[] Display a movie banner (placeholder)
+[] Display title and description
+[] Fetch and display both genres `GET /api/movies/:id/genres` and staff `GET /api/movies/:id/staff`
+[] Fit the same rate options there with same behaviour
+
+### 9. Home view search and filter
+[] Searching hides "Your reviews"
+[] Search client side all movies by name
+[] Filter by options open a model to do the following:
+  - [] Filter by genre option let's you select 1 genre and display its movies `GET /api/genres/:id/movies`
+  - [] Filter by staff option let's you select 1 staff member and display their movies `GET /api/staff/:id/movies`
+  - Filtering clears name search
+[] Add option to clear search
+[] Add option to clear filters
