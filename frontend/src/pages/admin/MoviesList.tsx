@@ -30,6 +30,7 @@ export function MoviesList() {
   const [deleteConfirm, setDeleteConfirm] = useState<Id<Movie> | null>(null);
   const [viewMovie, setViewMovie] = useState<Id<Movie> | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -64,6 +65,10 @@ export function MoviesList() {
     }
   };
 
+  const filteredMovies = movies.filter((movie) =>
+    movie.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (isLoading || isLoadingData) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-neutral-950">
@@ -80,40 +85,37 @@ export function MoviesList() {
       {/* Header */}
       <header className="border-b border-white/10 bg-neutral-900/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-6 py-5">
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => navigate("/admin")}
+                className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+                Go Back
+              </button>
+              <div className="h-6 w-px bg-white/10"></div>
               <h1 className="text-2xl font-bold text-white">Manage Movies</h1>
-              <p className="text-white/60 text-sm mt-1">
-                View, edit, and delete movie records
-              </p>
             </div>
             
-            <div className="flex items-center gap-3">
-              <Button
-                onClick={() => navigate("/admin/movies/new")}
-                className="bg-[#e50914] hover:bg-[#b20710] text-white"
-              >
-                + Add Movie
-              </Button>
-              <Button
-                onClick={() => navigate("/admin")}
-                variant="outline"
-                className="border-white/20 text-white hover:bg-white/10 hover:text-white"
-              >
-                ← Go Back
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {movies.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/5 mb-4">
+            <Button
+              onClick={() => navigate("/admin/movies/new")}
+              className="bg-[#e50914] hover:bg-[#c4070f] text-white font-semibold"
+            >
               <svg
-                className="w-8 h-8 text-white/40"
+                className="w-5 h-5 mr-2"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -122,38 +124,148 @@ export function MoviesList() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"
+                  d="M12 4v16m8-8H4"
                 />
               </svg>
+              Add Movie
+            </Button>
+          </div>
+
+          {movies.length > 0 && (
+            <div className="relative">
+              <svg
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search movies by name..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 bg-neutral-900/50 border border-white/10 text-white placeholder:text-white/40 rounded-md focus:border-[#e50914] focus:ring-2 focus:ring-[#e50914]/20 focus:outline-none"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              )}
             </div>
-            <p className="text-white/60 mb-4">No movies found</p>
+          )}
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        {isLoadingData ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 border-4 border-[#e50914] border-t-transparent rounded-full animate-spin"></div>
+              <p className="text-white/70 text-sm">Loading movies...</p>
+            </div>
+          </div>
+        ) : movies.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <svg
+              className="w-16 h-16 text-white/20 mb-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"
+              />
+            </svg>
+            <h3 className="text-xl font-semibold text-white mb-2">
+              No Movies Yet
+            </h3>
+            <p className="text-white/60 mb-6">
+              Start by adding your first movie to the catalog.
+            </p>
             <Button
               onClick={() => navigate("/admin/movies/new")}
-              className="bg-[#e50914] hover:bg-[#b20710] text-white"
+              className="bg-[#e50914] hover:bg-[#c4070f] text-white font-semibold"
             >
               Add First Movie
             </Button>
           </div>
+        ) : filteredMovies.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <svg
+              className="w-16 h-16 text-white/20 mb-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+            <h3 className="text-xl font-semibold text-white mb-2">
+              No Results Found
+            </h3>
+            <p className="text-white/60 mb-4">
+              No movies match "{searchQuery}"
+            </p>
+            <Button
+              onClick={() => setSearchQuery("")}
+              variant="outline"
+              className="border-white/10 text-white hover:bg-white/5"
+            >
+              Clear Search
+            </Button>
+          </div>
         ) : (
-          <div className="bg-neutral-900/50 border border-white/10 rounded-lg overflow-hidden">
+          <div className="bg-neutral-900/30 border border-white/10 rounded-lg overflow-hidden">
             <Table>
               <TableHeader>
                 <TableRow className="border-white/10 hover:bg-transparent">
-                  <TableHead className="text-white font-semibold">ID</TableHead>
-                  <TableHead className="text-white font-semibold">Title</TableHead>
-                  <TableHead className="text-white font-semibold">Description</TableHead>
-                  <TableHead className="text-white font-semibold text-center">Rating</TableHead>
-                  <TableHead className="text-white font-semibold text-center">Views</TableHead>
-                  <TableHead className="text-white font-semibold text-right">Actions</TableHead>
+                  <TableHead className="text-white/70 font-semibold">ID</TableHead>
+                  <TableHead className="text-white/70 font-semibold">Title</TableHead>
+                  <TableHead className="text-white/70 font-semibold">Description</TableHead>
+                  <TableHead className="text-white/70 font-semibold text-center">Rating</TableHead>
+                  <TableHead className="text-white/70 font-semibold text-center">Views</TableHead>
+                  <TableHead className="text-white/70 font-semibold text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {movies.map((movie) => (
+                {filteredMovies.map((movie) => (
                   <TableRow
                     key={movie.id}
                     className="border-white/10 hover:bg-white/5"
                   >
-                    <TableCell className="text-white/80 font-mono">{movie.id}</TableCell>
+                    <TableCell className="text-white/90 font-mono">
+                      {movie.id}
+                    </TableCell>
                     <TableCell className="text-white font-medium">
                       {movie.name}
                     </TableCell>
@@ -177,7 +289,7 @@ export function MoviesList() {
                           onClick={() => setViewMovie(movie)}
                           variant="outline"
                           size="sm"
-                          className="border-white/20 text-white hover:bg-white/10 hover:text-white"
+                          className="border-white/10 text-white hover:bg-white/5"
                         >
                           View
                         </Button>
@@ -185,7 +297,7 @@ export function MoviesList() {
                           onClick={() => navigate(`/admin/movies/${movie.id}/edit`)}
                           variant="outline"
                           size="sm"
-                          className="border-white/20 text-white hover:bg-white/10 hover:text-white"
+                          className="border-white/10 text-white hover:bg-white/5"
                         >
                           Edit
                         </Button>
@@ -193,7 +305,7 @@ export function MoviesList() {
                           onClick={() => setDeleteConfirm(movie)}
                           variant="outline"
                           size="sm"
-                          className="border-[#e50914]/50 text-[#e50914] hover:bg-[#e50914]/10 hover:text-[#e50914]"
+                          className="border-red-500/50 text-red-400 hover:bg-red-500/10"
                         >
                           Delete
                         </Button>
@@ -205,31 +317,31 @@ export function MoviesList() {
             </Table>
           </div>
         )}
-      </div>
+      </main>
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={!!deleteConfirm} onOpenChange={() => setDeleteConfirm(null)}>
-        <DialogContent className="sm:max-w-[500px] bg-neutral-900 border-white/10">
+        <DialogContent className="bg-neutral-900 border-white/10 text-white">
           <DialogHeader>
-            <DialogTitle className="text-white">Delete Movie</DialogTitle>
-            <DialogDescription className="text-white/60">
-              Are you sure you want to delete "{deleteConfirm?.name}"? This action
-              cannot be undone.
+            <DialogTitle>Confirm Deletion</DialogTitle>
+            <DialogDescription className="text-white/70">
+              Are you sure you want to delete "{deleteConfirm?.name}"? This
+              action cannot be undone.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="gap-2">
+          <DialogFooter>
             <Button
-              onClick={() => setDeleteConfirm(null)}
               variant="outline"
+              onClick={() => setDeleteConfirm(null)}
               disabled={isDeleting}
-              className="border-white/20 text-white hover:bg-white/10 hover:text-white"
+              className="border-white/10 text-white hover:bg-white/5"
             >
               Cancel
             </Button>
             <Button
               onClick={handleDelete}
               disabled={isDeleting}
-              className="bg-[#e50914] hover:bg-[#b20710] text-white"
+              className="bg-red-600 hover:bg-red-700 text-white"
             >
               {isDeleting ? "Deleting..." : "Delete"}
             </Button>
@@ -239,42 +351,47 @@ export function MoviesList() {
 
       {/* View Movie Dialog */}
       <Dialog open={!!viewMovie} onOpenChange={() => setViewMovie(null)}>
-        <DialogContent className="sm:max-w-[600px] bg-neutral-900 border-white/10">
+        <DialogContent className="bg-neutral-900 border-white/10 text-white">
           <DialogHeader>
-            <DialogTitle className="text-2xl text-white">{viewMovie?.name}</DialogTitle>
+            <DialogTitle>Movie Details</DialogTitle>
           </DialogHeader>
           {viewMovie && (
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-white/60">Description</label>
-                <p className="text-white mt-1">{viewMovie.description}</p>
+                <p className="text-sm text-white/60">ID</p>
+                <p className="text-white font-mono">{viewMovie.id}</p>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-white/60">Average Rating</label>
-                  <div className="flex items-center gap-2 mt-1">
-                    <StarRating rating={viewMovie.scoreAverage} size="sm" />
-                    <span className="text-white font-medium">
-                      {viewMovie.scoreAverage.toFixed(1)}
-                    </span>
-                  </div>
+              <div>
+                <p className="text-sm text-white/60">Title</p>
+                <p className="text-white font-medium">{viewMovie.name}</p>
+              </div>
+              <div>
+                <p className="text-sm text-white/60">Description</p>
+                <p className="text-white">{viewMovie.description}</p>
+              </div>
+              <div>
+                <p className="text-sm text-white/60">Average Rating</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <StarRating rating={viewMovie.scoreAverage} size="sm" />
+                  <span className="text-white font-medium">
+                    {viewMovie.scoreAverage.toFixed(1)}
+                  </span>
                 </div>
-                <div>
-                  <label className="text-sm font-medium text-white/60">View Count</label>
-                  <p className="text-white font-medium mt-1">{viewMovie.viewCount}</p>
-                </div>
+              </div>
+              <div>
+                <p className="text-sm text-white/60">View Count</p>
+                <p className="text-white font-medium">{viewMovie.viewCount}</p>
               </div>
             </div>
           )}
           <DialogFooter className="gap-2">
             <Button
               onClick={() => {
-                if (viewMovie) {
-                  navigate(`/admin/movies/${viewMovie.id}/edit`);
-                }
+                navigate(`/admin/movies/${viewMovie?.id}/edit`);
+                setViewMovie(null);
               }}
               variant="outline"
-              className="border-white/20 text-white hover:bg-white/10 hover:text-white"
+              className="border-white/10 text-white hover:bg-white/5"
             >
               Edit
             </Button>
@@ -283,7 +400,8 @@ export function MoviesList() {
                 setDeleteConfirm(viewMovie);
                 setViewMovie(null);
               }}
-              className="bg-[#e50914] hover:bg-[#b20710] text-white"
+              variant="outline"
+              className="border-red-500/50 text-red-400 hover:bg-red-500/10"
             >
               Delete
             </Button>
