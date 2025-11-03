@@ -3,6 +3,8 @@ import {
   useContext,
   useState,
   useEffect,
+  useCallback,
+  useMemo,
   type ReactNode,
 } from "react";
 import { streamifyClient } from "../api/streamify-client";
@@ -20,13 +22,31 @@ interface AuthContextType {
   checkAuth: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const defaultContextValue: AuthContextType = {
+  user: null,
+  isLoading: true,
+  isAuthenticated: false,
+  login: async () => {
+    throw new Error("AuthProvider not initialized");
+  },
+  register: async () => {
+    throw new Error("AuthProvider not initialized");
+  },
+  logout: () => {
+    throw new Error("AuthProvider not initialized");
+  },
+  checkAuth: async () => {
+    throw new Error("AuthProvider not initialized");
+  },
+};
+
+const AuthContext = createContext<AuthContextType>(defaultContextValue);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       if (!streamifyClient.hasToken()) {
         setUser(null);
@@ -43,39 +63,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     checkAuth();
-  }, []);
+  }, [checkAuth]);
 
-  const login = async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string) => {
     await streamifyClient.authenticate({ email, password });
     const currentUser = await streamifyClient.getCurrentUser();
     setUser(currentUser);
-  };
+  }, []);
 
-  const register = async (profile: Profile) => {
+  const register = useCallback(async (profile: Profile) => {
     await streamifyClient.register(profile);
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     streamifyClient.clearToken();
     setUser(null);
-  };
+  }, []);
+
+  const value = useMemo(
+    () => ({
+      user,
+      isLoading,
+      isAuthenticated: user !== null,
+      login,
+      register,
+      logout,
+      checkAuth,
+    }),
+    [user, isLoading, login, register, logout, checkAuth]
+  );
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isLoading,
-        isAuthenticated: user !== null,
-        login,
-        register,
-        logout,
-        checkAuth,
-      }}
-    >
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
@@ -83,9 +106,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
   return context;
 }
 

@@ -36,3 +36,26 @@ export type StaffMember = {
   name: string;
   lastName: string;
 };
+
+export type MovieGenre = {
+  movieId: number;
+  genreId: number;
+};
+
+export type MovieStaff = {
+  movieId: number;
+  staffMemberId: number;
+  roleName: string;
+};
+
+export type MovieStaffAggregated = {
+  id: number;
+  member: Id<StaffMember>;
+  roleName: string;
+};
+
+export type StaffMovieAggregated = {
+  id: number;
+  movie: Id<Movie>;
+  roleName: string;
+};

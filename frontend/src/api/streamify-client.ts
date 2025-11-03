@@ -1,4 +1,4 @@
-import type { Id, Profile, Movie, ViewAggregated, Genre, StaffMember } from "../model/streamify.model";
+import type { Id, Profile, Movie, ViewAggregated, Genre, StaffMember, MovieGenre, MovieStaff, MovieStaffAggregated, StaffMovieAggregated } from "../model/streamify.model";
 
 class StreamifyClient {
   private baseHeaders: Record<string, string> = {
@@ -340,6 +340,182 @@ class StreamifyClient {
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || "Failed to delete staff member");
+    }
+
+    return response.json();
+  }
+
+  // Movie Genres
+  async getMovieGenres(movieId: number): Promise<Id<Genre>[]> {
+    const response = await fetch(`/api/movies/${movieId}/genres`, {
+      headers: this.authHeaders,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to fetch movie genres");
+    }
+
+    return response.json();
+  }
+
+  async addMovieGenre(movieId: number, genreId: number) {
+    const response = await fetch(`/api/movies/${movieId}/genres`, {
+      method: "POST",
+      headers: this.authHeaders,
+      body: JSON.stringify({ genreId }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to add genre to movie");
+    }
+
+    return response.json();
+  }
+
+  async removeMovieGenre(movieId: number, genreId: number) {
+    const response = await fetch(`/api/movies/${movieId}/genres`, {
+      method: "DELETE",
+      headers: this.authHeaders,
+      body: JSON.stringify({ genreId }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to remove genre from movie");
+    }
+
+    return response.json();
+  }
+
+  // Movie Staff
+  async getMovieStaff(movieId: number): Promise<MovieStaffAggregated[]> {
+    const response = await fetch(`/api/movies/${movieId}/staff`, {
+      headers: this.authHeaders,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to fetch movie staff");
+    }
+
+    return response.json();
+  }
+
+  async addMovieStaff(movieId: number, staffMemberId: number, roleName: string) {
+    const response = await fetch(`/api/movies/${movieId}/staff`, {
+      method: "POST",
+      headers: this.authHeaders,
+      body: JSON.stringify({ staffMemberId, roleName }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to add staff to movie");
+    }
+
+    return response.json();
+  }
+
+  async removeMovieStaff(movieId: number, movieStaffId: number) {
+    const response = await fetch(`/api/movies/${movieId}/staff`, {
+      method: "DELETE",
+      headers: this.authHeaders,
+      body: JSON.stringify({ id: movieStaffId }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to remove staff from movie");
+    }
+
+    return response.json();
+  }
+
+  // Genre Movies
+  async getGenreMovies(genreId: number): Promise<Id<Movie>[]> {
+    const response = await fetch(`/api/genres/${genreId}/movies`, {
+      headers: this.authHeaders,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to fetch genre movies");
+    }
+
+    return response.json();
+  }
+
+  async addGenreMovie(genreId: number, movieId: number) {
+    const response = await fetch(`/api/genres/${genreId}/movies`, {
+      method: "POST",
+      headers: this.authHeaders,
+      body: JSON.stringify({ movieId }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to add movie to genre");
+    }
+
+    return response.json();
+  }
+
+  async removeGenreMovie(genreId: number, movieId: number) {
+    const response = await fetch(`/api/genres/${genreId}/movies`, {
+      method: "DELETE",
+      headers: this.authHeaders,
+      body: JSON.stringify({ movieId }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to remove movie from genre");
+    }
+
+    return response.json();
+  }
+
+  // Staff Movies
+  async getStaffMovies(staffMemberId: number): Promise<StaffMovieAggregated[]> {
+    const response = await fetch(`/api/staff/${staffMemberId}/movies`, {
+      headers: this.authHeaders,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to fetch staff movies");
+    }
+
+    return response.json();
+  }
+
+  async addStaffMovie(staffMemberId: number, movieId: number, roleName: string) {
+    const response = await fetch(`/api/staff/${staffMemberId}/movies`, {
+      method: "POST",
+      headers: this.authHeaders,
+      body: JSON.stringify({ movieId, roleName }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to add movie to staff");
+    }
+
+    return response.json();
+  }
+
+  async removeStaffMovie(staffMemberId: number, staffMovieId: number) {
+    const response = await fetch(`/api/staff/${staffMemberId}/movies`, {
+      method: "DELETE",
+      headers: this.authHeaders,
+      body: JSON.stringify({ id: staffMovieId }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to remove movie from staff");
     }
 
     return response.json();

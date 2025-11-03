@@ -104,6 +104,18 @@ This has a caveat Movie_Staff requires role name:
   - Display a field at the botton will display the role for existing Movie_Staff (data on left side)
   - Clicking on a staff member (right side) will display the role field empty and is required to add new record to movie.
 Removing staff from left side `DELETE /api/movies/:id/staff` and refreshes right side.
-Adding staff to movie `POST /api/movies/:id/staff
+Adding staff to movie `POST /api/movies/:id/staff`
 
-### 7.3 
+### 7.3 Genres and Movies
+Exact same steps as 7.1 but from Genres perspective (within Genre edit view), I wan to be able to assign or unassign movies to a genre.
+  - Left `GET /api/genres/:id/movies`
+  - Right `GET /api/movies`.
+  - Adding `POST /api/genres/:id/movies`
+  - Removing `DELETE /api/genres/:id/movies`
+
+### 7.4 Staff_Members and Movies
+Exact same steps as 7.2 but from Staff_Member perspective (within Staff_Member edit view), I wan to be able to assign or unassign movies to a staff_member.
+  - Left `GET /api/staff/:id/movies`
+  - Right `GET /api/movies`.
+  - Adding `POST /api/staff/:id/movies`
+  - Removing `DELETE /api/staff/:id/movies`
