@@ -10,6 +10,8 @@ import { MoviesList } from "./pages/admin/MoviesList";
 import { MovieForm } from "./pages/admin/MovieForm";
 import { GenresList } from "./pages/admin/GenresList";
 import { GenreForm } from "./pages/admin/GenreForm";
+import { StaffList } from "./pages/admin/StaffList";
+import { StaffForm } from "./pages/admin/StaffForm";
 import { AuthProvider } from "./hooks/useAuth";
 
 const router = createBrowserRouter([
@@ -24,6 +26,9 @@ const router = createBrowserRouter([
   { path: "/admin/genres", Component: GenresList },
   { path: "/admin/genres/new", Component: GenreForm },
   { path: "/admin/genres/:id/edit", Component: GenreForm },
+  { path: "/admin/staff", Component: StaffList },
+  { path: "/admin/staff/new", Component: StaffForm },
+  { path: "/admin/staff/:id/edit", Component: StaffForm },
 ]);
 
 function App() {

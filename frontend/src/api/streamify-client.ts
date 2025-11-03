@@ -1,4 +1,4 @@
-import type { Id, Profile, Movie, ViewAggregated, Genre } from "../model/streamify.model";
+import type { Id, Profile, Movie, ViewAggregated, Genre, StaffMember } from "../model/streamify.model";
 
 class StreamifyClient {
   private baseHeaders: Record<string, string> = {
@@ -269,6 +269,77 @@ class StreamifyClient {
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || "Failed to delete genre");
+    }
+
+    return response.json();
+  }
+
+  // Staff Members
+  async getStaffMembers(): Promise<Id<StaffMember>[]> {
+    const response = await fetch("/api/staff", {
+      headers: this.authHeaders,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to fetch staff members");
+    }
+
+    return response.json();
+  }
+
+  async getStaffMemberById(id: number): Promise<Id<StaffMember>> {
+    const response = await fetch(`/api/staff/${id}`, {
+      headers: this.authHeaders,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to fetch staff member");
+    }
+
+    return response.json();
+  }
+
+  async createStaffMember(staffMember: StaffMember) {
+    const response = await fetch("/api/staff", {
+      method: "POST",
+      headers: this.authHeaders,
+      body: JSON.stringify(staffMember),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to create staff member");
+    }
+
+    return response.json();
+  }
+
+  async updateStaffMember(id: number, staffMember: Partial<StaffMember>) {
+    const response = await fetch(`/api/staff/${id}`, {
+      method: "PATCH",
+      headers: this.authHeaders,
+      body: JSON.stringify(staffMember),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to update staff member");
+    }
+
+    return response.json();
+  }
+
+  async deleteStaffMember(id: number) {
+    const response = await fetch(`/api/staff/${id}`, {
+      method: "DELETE",
+      headers: this.authHeaders,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to delete staff member");
     }
 
     return response.json();

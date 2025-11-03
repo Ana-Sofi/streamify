@@ -31,3 +31,8 @@ export type ViewAggregated = {
   score: number;
   movie: Id<Movie>;
 };
+
+export type StaffMember = {
+  name: string;
+  lastName: string;
+};
