@@ -21,6 +21,7 @@ import {newMovieStaffSchema} from '../validators/new-movie-staff.schema';
 import {ForbiddenError} from '../errors/forbidden.error';
 import {patchStaffMovieSchema} from '../validators/patch-movie-staff.schema';
 import {deleteStaffMovieSchema} from '../validators/delete-movie-staff.schema';
+import {authorize} from '../handlers/authorization.handler';
 
 const router: Router = Router();
 
@@ -38,14 +39,14 @@ router.get('/:id', async (req, res, next) => {
   else res.status(200).send(staffMember);
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', authorize(['administrator']), async (req, res, next) => {
   const staffMember = await newStaffMemberSchema.validate(req.body);
 
   const rowsAltered = await insertStaffMember(staffMember);
   res.status(201).send({message: `Success: ${rowsAltered} rows created`});
 });
 
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id', authorize(['administrator']), async (req, res, next) => {
   const staffMember = await patchStaffMemberSchema.validate({
     ...req.body,
     id: req.params.id,
@@ -76,41 +77,54 @@ router.get('/:id/movies', async (req, res, next) => {
   res.status(200).send(staff);
 });
 
-router.post('/:id/movies', async (req, res, next) => {
-  const movieStaff = await newMovieStaffSchema.validate({
-    ...req.body,
-    staffMemberId: req.params.id,
-  });
+router.post(
+  '/:id/movies',
+  authorize(['administrator']),
+  async (req, res, next) => {
+    const movieStaff = await newMovieStaffSchema.validate({
+      ...req.body,
+      staffMemberId: req.params.id,
+    });
 
-  const rowsAltered = await insertMovieStaff(movieStaff);
-  if (rowsAltered === 0)
-    throw new NotFoundError('Movie or Staff Member not found!');
-  else if (rowsAltered === -1)
-    throw new ForbiddenError('Movie Staff already exists!');
-  res.status(201).send({message: `Success: ${rowsAltered} rows created`});
-});
+    const rowsAltered = await insertMovieStaff(movieStaff);
+    if (rowsAltered === 0)
+      throw new NotFoundError('Movie or Staff Member not found!');
+    else if (rowsAltered === -1)
+      throw new ForbiddenError('Movie Staff already exists!');
+    res.status(201).send({message: `Success: ${rowsAltered} rows created`});
+  },
+);
 
-router.patch('/:id/movies', async (req, res, next) => {
-  const movieStaff = await patchStaffMovieSchema.validate({
-    ...req.body,
-    staffMemberId: req.params.id,
-  });
-  const rowsAltered = await patchMovieStaffByStaff(movieStaff);
+router.patch(
+  '/:id/movies',
+  authorize(['administrator']),
+  async (req, res, next) => {
+    const movieStaff = await patchStaffMovieSchema.validate({
+      ...req.body,
+      staffMemberId: req.params.id,
+    });
+    const rowsAltered = await patchMovieStaffByStaff(movieStaff);
 
-  if (rowsAltered === 0) throw new NotFoundError('Movie Staff not found!');
-  else res.status(200).send({message: `Success: ${rowsAltered} rows updated`});
-});
+    if (rowsAltered === 0) throw new NotFoundError('Movie Staff not found!');
+    else
+      res.status(200).send({message: `Success: ${rowsAltered} rows updated`});
+  },
+);
 
-router.delete('/:id/movies', async (req, res, next) => {
-  const movieStaff = await deleteStaffMovieSchema.validate({
-    ...req.body,
-    staffMemberId: req.params.id,
-  });
-  const rowsAltered = await deleteMovieStaffByStaff(movieStaff);
+router.delete(
+  '/:id/movies',
+  authorize(['administrator']),
+  async (req, res, next) => {
+    const movieStaff = await deleteStaffMovieSchema.validate({
+      ...req.body,
+      staffMemberId: req.params.id,
+    });
+    const rowsAltered = await deleteMovieStaffByStaff(movieStaff);
 
-  if (rowsAltered > 0)
-    res.status(200).send({message: `Success: ${rowsAltered} rows deleted`});
-  else throw new NotFoundError('Movie Staff not found!');
-});
+    if (rowsAltered > 0)
+      res.status(200).send({message: `Success: ${rowsAltered} rows deleted`});
+    else throw new NotFoundError('Movie Staff not found!');
+  },
+);
 
 export const staffMemberRouter = router;

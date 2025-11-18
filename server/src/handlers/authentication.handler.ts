@@ -4,8 +4,15 @@ import {UnauthorizedError} from '../errors/unauthorized.error';
 import {AccessTokenPayload} from '../lib/token';
 import {getProfileById} from '../repositories/profiles.repository';
 import {HttpError} from '../errors/http.error';
-import {Profile} from '../model/profile.model';
+import {AuthenticatedProfile, Profile} from '../model/profile.model';
 import {Optional} from '../lib/optional';
+import {Role} from '../model/role.model';
+
+const adminUsers = ['admin.user@streamify.com'];
+function getUserRole(email: string): Role {
+  if (adminUsers.includes(email)) return 'administrator';
+  return 'regular';
+}
 
 export const authenticationHandler: RequestHandler = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -35,8 +42,9 @@ export const authenticationHandler: RequestHandler = async (req, res, next) => {
     console.error('Error: Authentication attempt by non existing profile!');
     throw new HttpError(500);
   }
-  req.user = profile;
+  req.user = profile as unknown as AuthenticatedProfile;
   delete (req.user as Optional<Profile, 'password'>).password;
+  req.user.role = getUserRole(req.user.email);
 
   next();
 };

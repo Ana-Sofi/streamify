@@ -28,6 +28,7 @@ import {
 import {newMovieStaffSchema} from '../validators/new-movie-staff.schema';
 import {patchMovieStaffSchema} from '../validators/patch-movie-staff.schema';
 import {deleteMovieStaffSchema} from '../validators/delete-movie-staff.schema';
+import {authorize} from '../handlers/authorization.handler';
 
 const router = Router();
 
@@ -46,7 +47,7 @@ router.get('/:id', async (req, res, next) => {
   res.status(200).send(movie);
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', authorize(['administrator']), async (req, res, next) => {
   const movie = (await newMovieSchema.validate(req.body)) as Movie;
   movie.scoreAverage = 0;
   movie.viewCount = 0;
@@ -56,7 +57,7 @@ router.post('/', async (req, res, next) => {
   res.status(201).send({message: `Success: ${rowsAltered} rows created`});
 });
 
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id', authorize(['administrator']), async (req, res, next) => {
   const movie = await patchMovieSchema.validate({
     ...req.body,
     id: req.params.id,
@@ -71,7 +72,7 @@ router.patch('/:id', async (req, res, next) => {
   else throw new NotFoundError('Movie not found!');
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', authorize(['administrator']), async (req, res, next) => {
   const {id} = await idParamSchema.validate(req.params);
   const rowsAltered = await deleteMovie(id);
 
@@ -87,30 +88,38 @@ router.get('/:id/genres', async (req, res, next) => {
   res.status(200).send(genres);
 });
 
-router.post('/:id/genres', async (req, res, next) => {
-  const movieGenre = await newMovieGenreSchema.validate({
-    ...req.body,
-    movieId: req.params.id,
-  });
+router.post(
+  '/:id/genres',
+  authorize(['administrator']),
+  async (req, res, next) => {
+    const movieGenre = await newMovieGenreSchema.validate({
+      ...req.body,
+      movieId: req.params.id,
+    });
 
-  const rowsAltered = await insertMovieGenre(movieGenre);
-  if (rowsAltered === 0) throw new NotFoundError('Movie or Genre not found!');
-  else if (rowsAltered === -1)
-    throw new ForbiddenError('Movie Genre already exists!');
-  res.status(201).send({message: `Success ${rowsAltered} rows created`});
-});
+    const rowsAltered = await insertMovieGenre(movieGenre);
+    if (rowsAltered === 0) throw new NotFoundError('Movie or Genre not found!');
+    else if (rowsAltered === -1)
+      throw new ForbiddenError('Movie Genre already exists!');
+    res.status(201).send({message: `Success ${rowsAltered} rows created`});
+  },
+);
 
-router.delete('/:id/genres', async (req, res, next) => {
-  const movieGenre = await newMovieGenreSchema.validate({
-    ...req.body,
-    movieId: req.params.id,
-  });
-  const rowsAltered = await deleteMovieGenre(movieGenre);
+router.delete(
+  '/:id/genres',
+  authorize(['administrator']),
+  async (req, res, next) => {
+    const movieGenre = await newMovieGenreSchema.validate({
+      ...req.body,
+      movieId: req.params.id,
+    });
+    const rowsAltered = await deleteMovieGenre(movieGenre);
 
-  if (rowsAltered > 0)
-    res.status(200).send({message: `Success: ${rowsAltered} rows deleted`});
-  else throw new NotFoundError('Movie Genre not found!');
-});
+    if (rowsAltered > 0)
+      res.status(200).send({message: `Success: ${rowsAltered} rows deleted`});
+    else throw new NotFoundError('Movie Genre not found!');
+  },
+);
 
 router.get('/:id/staff', async (req, res, next) => {
   const {id} = await idParamSchema.validate(req.params);
@@ -119,41 +128,54 @@ router.get('/:id/staff', async (req, res, next) => {
   res.status(200).send(staff);
 });
 
-router.post('/:id/staff', async (req, res, next) => {
-  const movieStaff = await newMovieStaffSchema.validate({
-    ...req.body,
-    movieId: req.params.id,
-  });
+router.post(
+  '/:id/staff',
+  authorize(['administrator']),
+  async (req, res, next) => {
+    const movieStaff = await newMovieStaffSchema.validate({
+      ...req.body,
+      movieId: req.params.id,
+    });
 
-  const rowsAltered = await insertMovieStaff(movieStaff);
-  if (rowsAltered === 0)
-    throw new NotFoundError('Movie or Staff Member not found!');
-  else if (rowsAltered === -1)
-    throw new ForbiddenError('Movie Staff already exists!');
-  res.status(201).send({message: `Success: ${rowsAltered} rows created`});
-});
+    const rowsAltered = await insertMovieStaff(movieStaff);
+    if (rowsAltered === 0)
+      throw new NotFoundError('Movie or Staff Member not found!');
+    else if (rowsAltered === -1)
+      throw new ForbiddenError('Movie Staff already exists!');
+    res.status(201).send({message: `Success: ${rowsAltered} rows created`});
+  },
+);
 
-router.patch('/:id/staff', async (req, res, next) => {
-  const movieStaff = await patchMovieStaffSchema.validate({
-    ...req.body,
-    movieId: req.params.id,
-  });
-  const rowsAltered = await patchMovieStaffByMovie(movieStaff);
+router.patch(
+  '/:id/staff',
+  authorize(['administrator']),
+  async (req, res, next) => {
+    const movieStaff = await patchMovieStaffSchema.validate({
+      ...req.body,
+      movieId: req.params.id,
+    });
+    const rowsAltered = await patchMovieStaffByMovie(movieStaff);
 
-  if (rowsAltered === 0) throw new NotFoundError('Movie Staff not found!');
-  else res.status(200).send({message: `Success: ${rowsAltered} rows updated`});
-});
+    if (rowsAltered === 0) throw new NotFoundError('Movie Staff not found!');
+    else
+      res.status(200).send({message: `Success: ${rowsAltered} rows updated`});
+  },
+);
 
-router.delete('/:id/staff', async (req, res, next) => {
-  const movieStaff = await deleteMovieStaffSchema.validate({
-    ...req.body,
-    movieId: req.params.id,
-  });
-  const rowsAltered = await deleteMovieStaffByMovie(movieStaff);
+router.delete(
+  '/:id/staff',
+  authorize(['administrator']),
+  async (req, res, next) => {
+    const movieStaff = await deleteMovieStaffSchema.validate({
+      ...req.body,
+      movieId: req.params.id,
+    });
+    const rowsAltered = await deleteMovieStaffByMovie(movieStaff);
 
-  if (rowsAltered > 0)
-    res.status(200).send({message: `Success: ${rowsAltered} rows deleted`});
-  else throw new NotFoundError('Movie Staff not found!');
-});
+    if (rowsAltered > 0)
+      res.status(200).send({message: `Success: ${rowsAltered} rows deleted`});
+    else throw new NotFoundError('Movie Staff not found!');
+  },
+);
 
 export const moviesRouter: Router = router;
