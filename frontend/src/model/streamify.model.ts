@@ -14,6 +14,12 @@ export type Profile = {
   lastName: string;
 } & Credentials;
 
+export type Role = 'administrator' | 'regular';
+
+export type AuthenticatedProfile = {
+  role: Role
+} & Omit<Profile, 'password'>;
+
 export type Movie = {
   name: string;
   description: string;

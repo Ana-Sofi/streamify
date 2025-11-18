@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { useProtectedRoute } from "../../hooks/useProtectedRoute";
+import { useAdminRoute } from "../../hooks/useAdminRoute";
 import { streamifyClient } from "../../api/streamify-client";
 import type { StaffMember, Id } from "../../model/streamify.model";
 import {
@@ -22,7 +22,7 @@ import {
 } from "../../components/ui/dialog";
 
 export function StaffList() {
-  const { isLoading } = useProtectedRoute();
+  const { isLoading } = useAdminRoute();
   const navigate = useNavigate();
   const [staffMembers, setStaffMembers] = useState<Id<StaffMember>[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);

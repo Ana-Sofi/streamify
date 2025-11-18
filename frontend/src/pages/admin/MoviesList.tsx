@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useProtectedRoute } from "../../hooks/useProtectedRoute";
+import { useAdminRoute } from "../../hooks/useAdminRoute";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import { streamifyClient } from "../../api/streamify-client";
@@ -23,7 +23,7 @@ import {
 import { StarRating } from "../../components/StarRating";
 
 export function MoviesList() {
-  const { isLoading } = useProtectedRoute();
+  const { isLoading } = useAdminRoute();
   const navigate = useNavigate();
   const [movies, setMovies] = useState<Id<Movie>[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);

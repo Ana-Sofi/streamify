@@ -8,14 +8,15 @@ import {
   type ReactNode,
 } from "react";
 import { streamifyClient } from "../api/streamify-client";
-import type { Id, Profile } from "../model/streamify.model";
+import type { Id, Profile, AuthenticatedProfile } from "../model/streamify.model";
 
-type User = Id<Omit<Profile, "password">>;
+type User = Id<AuthenticatedProfile>;
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  isAdministrator: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (profile: Profile) => Promise<void>;
   logout: () => void;
@@ -26,6 +27,7 @@ const defaultContextValue: AuthContextType = {
   user: null,
   isLoading: true,
   isAuthenticated: false,
+  isAdministrator: false,
   login: async () => {
     throw new Error("AuthProvider not initialized");
   },
@@ -84,17 +86,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, []);
 
+  const isAdministrator = useMemo(
+    () => user?.role === "administrator",
+    [user]
+  );
+
   const value = useMemo(
     () => ({
       user,
       isLoading,
       isAuthenticated: user !== null,
+      isAdministrator,
       login,
       register,
       logout,
       checkAuth,
     }),
-    [user, isLoading, login, register, logout, checkAuth]
+    [user, isLoading, isAdministrator, login, register, logout, checkAuth]
   );
 
   return (

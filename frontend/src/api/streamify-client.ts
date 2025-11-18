@@ -1,4 +1,4 @@
-import type { Id, Profile, Movie, ViewAggregated, Genre, StaffMember, MovieGenre, MovieStaff, MovieStaffAggregated, StaffMovieAggregated } from "../model/streamify.model";
+import type { Id, Profile, Movie, ViewAggregated, Genre, StaffMember, MovieStaffAggregated, StaffMovieAggregated, AuthenticatedProfile } from "../model/streamify.model";
 
 class StreamifyClient {
   private baseHeaders: Record<string, string> = {
@@ -78,7 +78,7 @@ class StreamifyClient {
       throw new Error("Failed to fetch current user");
     }
 
-    return (await response.json()) as Id<Omit<Profile, "password">>;
+    return (await response.json()) as Id<AuthenticatedProfile>;
   }
 
   clearToken() {

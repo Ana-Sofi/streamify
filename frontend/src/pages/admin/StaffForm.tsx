@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useForm } from "react-hook-form";
-import { useProtectedRoute } from "../../hooks/useProtectedRoute";
+import { useAdminRoute } from "../../hooks/useAdminRoute";
 import { streamifyClient } from "../../api/streamify-client";
 import type { StaffMember, Id, Movie, StaffMovieAggregated } from "../../model/streamify.model";
 import { Button } from "../../components/ui/button";
@@ -9,7 +9,7 @@ import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 
 export function StaffForm() {
-  const { isLoading } = useProtectedRoute();
+  const { isLoading } = useAdminRoute();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const isEditMode = !!id;

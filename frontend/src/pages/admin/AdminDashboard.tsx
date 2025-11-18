@@ -1,10 +1,10 @@
 import { useAuth } from "../../hooks/useAuth";
-import { useProtectedRoute } from "../../hooks/useProtectedRoute";
+import { useAdminRoute } from "../../hooks/useAdminRoute";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 
 export function AdminDashboard() {
-  const { isLoading } = useProtectedRoute();
+  const { isLoading } = useAdminRoute();
   const { user } = useAuth();
   const navigate = useNavigate();
 

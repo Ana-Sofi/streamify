@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { useProtectedRoute } from "../../hooks/useProtectedRoute";
+import { useAdminRoute } from "../../hooks/useAdminRoute";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,7 +14,7 @@ type MovieFormData = {
 };
 
 export function MovieForm() {
-  const { isLoading } = useProtectedRoute();
+  const { isLoading } = useAdminRoute();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isEdit = !!id;
@@ -136,22 +136,36 @@ export function MovieForm() {
       <header className="border-b border-white/10 bg-neutral-900/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-6 py-5">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-white">
-                {isEdit ? "Edit Movie" : "Create New Movie"}
-              </h1>
-              <p className="text-white/60 text-sm mt-1">
-                {isEdit ? "Update movie information" : "Add a new movie to the catalog"}
-              </p>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => navigate("/admin/movies")}
+                className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+                Go Back
+              </button>
+              <div className="h-6 w-px bg-white/10"></div>
+              <div>
+                <h1 className="text-2xl font-bold text-white">
+                  {isEdit ? "Edit Movie" : "Create New Movie"}
+                </h1>
+                <p className="text-white/60 text-sm mt-1">
+                  {isEdit ? "Update movie information" : "Add a new movie to the catalog"}
+                </p>
+              </div>
             </div>
-
-            <Button
-              onClick={() => navigate("/admin/movies")}
-              variant="outline"
-              className="border-white/20 text-white hover:bg-white/10 hover:text-white"
-            >
-              ← Go Back
-            </Button>
           </div>
         </div>
       </header>
