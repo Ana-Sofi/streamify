@@ -9,5 +9,6 @@ export const dbMovieToModelMovie = (dbMovie: DbMovie): Id<Movie> => {
     description: dbMovie.description,
     scoreAverage: parseFloat(dbMovie.score_average) || 0,
     viewCount: dbMovie.view_count,
+    imageUrl: dbMovie.image_url || undefined,
   };
 };

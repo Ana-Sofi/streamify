@@ -10,6 +10,7 @@ export type DbMovie = {
   description: string;
   view_count: number;
   score_average: string; // PostgreSQL DECIMAL returns as string
+  image_url: string | null;
 };
 
 export async function getAllMovies() {
@@ -33,8 +34,10 @@ export async function getMovieById(id: number) {
 
 export async function insertMovie(movie: Movie) {
   const result = await sql`
-    insert into streamify.movie(name, description, view_count, score_average) 
-    values (${movie.name}, ${movie.description}, ${movie.viewCount}, ${movie.scoreAverage})
+    insert into streamify.movie(name, description, view_count, score_average, image_url) 
+    values (${movie.name}, ${movie.description}, ${movie.viewCount}, ${
+    movie.scoreAverage
+  }, ${movie.imageUrl || null})
   `;
 
   return result.count;
@@ -47,6 +50,7 @@ export async function patchMovie(movie: Id<Partial<Movie>>) {
       ['description', 'description'],
       ['view_count', 'viewCount'],
       ['score_average', 'scoreAverage'],
+      ['image_url', 'imageUrl'],
     ],
     movie,
   );

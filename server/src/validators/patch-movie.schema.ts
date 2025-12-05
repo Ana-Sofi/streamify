@@ -6,4 +6,5 @@ export const patchMovieSchema = object({
   description: string().optional(),
   viewCount: number().optional(),
   scoreAverage: number().optional(),
+  imageUrl: string().optional(),
 });

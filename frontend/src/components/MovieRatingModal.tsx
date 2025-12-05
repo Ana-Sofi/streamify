@@ -41,7 +41,7 @@ export function MovieRatingModal({
   useEffect(() => {
     const loadMovieDetails = async () => {
       if (!open || !movie.id) return;
-      
+
       setIsLoadingDetails(true);
       try {
         const [genresData, staffData] = await Promise.all([
@@ -98,22 +98,35 @@ export function MovieRatingModal({
       <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-neutral-900 border-white/10 p-0">
         {/* Banner Placeholder */}
         <div className="relative w-full h-64 bg-gradient-to-b from-neutral-800 to-neutral-900">
-          <div className="absolute inset-0 bg-neutral-800/50 flex items-center justify-center">
-            <svg
-              className="w-24 h-24 text-white/20"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"
+          {movie.imageUrl ? (
+            <>
+              <img
+                src={movie.imageUrl}
+                alt={movie.name}
+                className="w-full h-full object-cover"
               />
-            </svg>
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-neutral-900 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-neutral-900 to-transparent"></div>
+            </>
+          ) : (
+            <>
+              <div className="absolute inset-0 bg-neutral-800/50 flex items-center justify-center">
+                <svg
+                  className="w-24 h-24 text-white/20"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"
+                  />
+                </svg>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-neutral-900 to-transparent"></div>
+            </>
+          )}
         </div>
 
         <div className="px-8 pb-8">

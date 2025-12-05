@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS Movie (
     description TEXT,
     view_count INT NOT NULL,
     score_average DECIMAL(3, 2),
+    image_url VARCHAR(2000),
     PRIMARY KEY (movie_id)
 );
 

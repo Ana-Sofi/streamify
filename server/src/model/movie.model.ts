@@ -3,4 +3,5 @@ export type Movie = {
   description: string;
   viewCount: number;
   scoreAverage: number;
+  imageUrl?: string;
 };

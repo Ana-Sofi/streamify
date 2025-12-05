@@ -6,11 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useNavigate, useParams } from "react-router";
 import { streamifyClient } from "../../api/streamify-client";
-import type { Movie, Id, Genre, StaffMember, MovieStaffAggregated } from "../../model/streamify.model";
+import type { Id, Genre, StaffMember, MovieStaffAggregated } from "../../model/streamify.model";
 
 type MovieFormData = {
   name: string;
   description: string;
+  imageUrl?: string;
 };
 
 export function MovieForm() {
@@ -83,6 +84,7 @@ export function MovieForm() {
         const movie = await streamifyClient.getMovieById(parseInt(id));
         setValue("name", movie.name);
         setValue("description", movie.description);
+        setValue("imageUrl", movie.imageUrl || "");
         await Promise.all([loadGenres(), loadStaff()]);
       } catch (error) {
         console.error("Failed to fetch movie:", error);
@@ -102,10 +104,16 @@ export function MovieForm() {
     setIsSubmitting(true);
 
     try {
+      // Clean up imageUrl: if empty string, set to undefined
+      const movieData = {
+        ...data,
+        imageUrl: data.imageUrl?.trim() || undefined,
+      };
+
       if (isEdit && id) {
-        await streamifyClient.updateMovie(parseInt(id), data);
+        await streamifyClient.updateMovie(parseInt(id), movieData);
       } else {
-        await streamifyClient.createMovie(data);
+        await streamifyClient.createMovie(movieData);
       }
       navigate("/admin/movies");
     } catch (err) {
@@ -228,6 +236,27 @@ export function MovieForm() {
               )}
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="imageUrl" className="text-white text-sm font-medium">
+                Image URL
+              </Label>
+              <Input
+                id="imageUrl"
+                type="url"
+                placeholder="https://example.com/image.jpg"
+                className="bg-neutral-900/50 border-white/10 text-white placeholder:text-white/40 h-12 focus:border-[#e50914] focus:ring-[#e50914]/20"
+                {...register("imageUrl", {
+                  pattern: {
+                    value: /^https?:\/\/.+/,
+                    message: "Please enter a valid URL starting with http:// or https://",
+                  },
+                })}
+              />
+              {errors.imageUrl && (
+                <p className="text-sm text-[#e50914]">{errors.imageUrl.message}</p>
+              )}
+            </div>
+
             <div className="flex items-center gap-3 pt-4">
               <Button
                 type="submit"
@@ -239,8 +268,8 @@ export function MovieForm() {
                     ? "Updating..."
                     : "Creating..."
                   : isEdit
-                  ? "Update Movie"
-                  : "Create Movie"}
+                    ? "Update Movie"
+                    : "Create Movie"}
               </Button>
               <Button
                 type="button"
@@ -289,11 +318,10 @@ export function MovieForm() {
                             movieGenres.map((genre) => (
                               <div
                                 key={genre.id}
-                                className={`flex items-center justify-between p-2 rounded border ${
-                                  selectedGenreToAdd === genre.id
-                                    ? "border-[#e50914] bg-[#e50914]/10"
-                                    : "border-white/10 bg-neutral-800/50"
-                                }`}
+                                className={`flex items-center justify-between p-2 rounded border ${selectedGenreToAdd === genre.id
+                                  ? "border-[#e50914] bg-[#e50914]/10"
+                                  : "border-white/10 bg-neutral-800/50"
+                                  }`}
                               >
                                 <span className="text-white">{genre.name}</span>
                                 <Button
@@ -339,11 +367,10 @@ export function MovieForm() {
                               .map((genre) => (
                                 <div
                                   key={genre.id}
-                                  className={`flex items-center justify-between p-2 rounded border cursor-pointer ${
-                                    selectedGenreToAdd === genre.id
-                                      ? "border-[#e50914] bg-[#e50914]/10"
-                                      : "border-white/10 bg-neutral-800/50 hover:border-white/20"
-                                  }`}
+                                  className={`flex items-center justify-between p-2 rounded border cursor-pointer ${selectedGenreToAdd === genre.id
+                                    ? "border-[#e50914] bg-[#e50914]/10"
+                                    : "border-white/10 bg-neutral-800/50 hover:border-white/20"
+                                    }`}
                                   onClick={() =>
                                     setSelectedGenreToAdd(
                                       selectedGenreToAdd === genre.id ? null : genre.id
@@ -422,11 +449,10 @@ export function MovieForm() {
                             movieStaff.map((staff) => (
                               <div
                                 key={staff.id}
-                                className={`flex flex-col gap-2 p-2 rounded border ${
-                                  selectedStaffToRemove === staff.id
-                                    ? "border-[#e50914] bg-[#e50914]/10"
-                                    : "border-white/10 bg-neutral-800/50"
-                                }`}
+                                className={`flex flex-col gap-2 p-2 rounded border ${selectedStaffToRemove === staff.id
+                                  ? "border-[#e50914] bg-[#e50914]/10"
+                                  : "border-white/10 bg-neutral-800/50"
+                                  }`}
                                 onClick={() => {
                                   setSelectedStaffToRemove(
                                     selectedStaffToRemove === staff.id ? null : staff.id
@@ -510,11 +536,10 @@ export function MovieForm() {
                               .map((staff) => (
                                 <div
                                   key={staff.id}
-                                  className={`flex items-center justify-between p-2 rounded border cursor-pointer ${
-                                    selectedStaffToAdd === staff.id
-                                      ? "border-[#e50914] bg-[#e50914]/10"
-                                      : "border-white/10 bg-neutral-800/50 hover:border-white/20"
-                                  }`}
+                                  className={`flex items-center justify-between p-2 rounded border cursor-pointer ${selectedStaffToAdd === staff.id
+                                    ? "border-[#e50914] bg-[#e50914]/10"
+                                    : "border-white/10 bg-neutral-800/50 hover:border-white/20"
+                                    }`}
                                   onClick={() => {
                                     setSelectedStaffToAdd(
                                       selectedStaffToAdd === staff.id ? null : staff.id
